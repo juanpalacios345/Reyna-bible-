@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rooted with Reyna</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Barlow Condensed', sans-serif;
+    background: linear-gradient(145deg, #1A0510 0%, #2D0A1F 30%, #1E0828 60%, #12051E 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: #EEE0D0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes floatCross  { 0%,100%{transform:translateY(0) rotate(-1deg)} 50%{transform:translateY(-14px) rotate(1deg)} }
+  @keyframes breathe     { 0%,100%{transform:scale(1);opacity:.7} 50%{transform:scale(1.2);opacity:1} }
+  @keyframes dotPulse    { 0%,100%{transform:scale(1);opacity:.4} 50%{transform:scale(1.6);opacity:1} }
+  @keyframes glowPulse   { 0%,100%{box-shadow:0 0 18px rgba(212,175,106,.18)} 50%{box-shadow:0 0 38px rgba(212,175,106,.5)} }
+  @keyframes twinkle     { 0%,100%{opacity:.2;transform:scale(1)} 50%{opacity:.75;transform:scale(1.5)} }
+  @keyframes pulse       { 0%,100%{opacity:.5} 50%{opacity:1} }
+  @keyframes fadeUp      { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes slideIn     { from{opacity:0;transform:translateX(8px)} to{opacity:1;transform:translateX(0)} }
+  @keyframes splashFadeIn{ from{opacity:0} to{opacity:1} }
+
+  @keyframes dustA { 0%{opacity:0;transform:translate(-50%,-50%) scale(0)} 12%{opacity:1} 100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.2) rotate(var(--rot))} }
+
+  /* ── SPLASH ── */
+  #splash {
+    position: fixed; inset: 0; z-index: 2000;
+    background: linear-gradient(145deg,#1A0510 0%,#2D0A1F 40%,#1A0A2E 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px;
+    animation: splashFadeIn .35s ease;
+    transition: opacity .55s ease;
+  }
+  #splash.fade-out { opacity: 0; pointer-events: none; }
+  #splash.hidden   { display: none; }
+
+  .splash-halo {
+    position: absolute; width: 280px; height: 280px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(212,175,106,.22) 0%, transparent 70%);
+    animation: breathe 3s ease-in-out infinite;
+  }
+  .splash-cross { animation: floatCross 3s ease-in-out infinite; position: relative; z-index: 2; }
+  .splash-title { text-align: center; position: relative; z-index: 2; }
+  .splash-title h1 {
+    font-weight: 800; font-size: 27px; letter-spacing: .13em; text-transform: uppercase;
+    color: #D4AF6A; text-shadow: 0 0 28px rgba(212,175,106,.6); line-height: 1.1;
+  }
+  .splash-title p {
+    font-weight: 400; font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
+    color: rgba(212,175,106,.45); margin-top: 8px;
+  }
+  .dots { display: flex; gap: 7px; position: relative; z-index: 2; }
+  .dot {
+    width: 5px; height: 5px; border-radius: 50%; background: #D4AF6A; opacity: .5;
+    animation: dotPulse 1.4s ease-in-out infinite;
+  }
+  .dot:nth-child(2){ animation-delay:.22s }
+  .dot:nth-child(3){ animation-delay:.44s }
+
+  /* ── MAIN APP ── */
+  #app {
+    opacity: 0; transition: opacity .5s ease .1s;
+    display: flex; flex-direction: column; align-items: center;
+    min-height: 100vh;
+  }
+  #app.visible { opacity: 1; }
+
+  .container { width: 100%; max-width: 480px; padding: 26px 18px 0; }
+
+  /* ── GOLD DUST LAYER ── */
+  #dust-layer { position: fixed; inset: 0; pointer-events: none; z-index: 9999; overflow: hidden; }
+  .dust-particle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0;
+    animation: dustA var(--dur) ease-out forwards;
+    animation-delay: var(--delay);
+  }
+
+  /* ── HEADER ── */
+  .header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 4px; }
+  .header-left { display: flex; align-items: center; gap: 10px; }
+  .app-name { font-weight: 800; font-size: 18px; color: #D4AF6A; line-height: 1.1;
+    letter-spacing: .12em; text-transform: uppercase; text-shadow: 0 0 20px rgba(212,175,106,.4); }
+  .app-sub  { font-weight: 400; font-size: 8.5px; color: rgba(212,175,106,.4);
+    margin-top: 3px; letter-spacing: .14em; text-transform: uppercase; }
+
+  .lang-toggle {
+    display: flex; align-items: center;
+    background: rgba(30,5,20,.8); border: 1px solid rgba(212,175,106,.2);
+    border-radius: 100px; padding: 3px; gap: 2px; flex-shrink: 0; margin-top: 2px;
+  }
+  .lang-btn {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: .08em;
+    border-radius: 100px; padding: 5px 10px; text-transform: uppercase;
+    background: transparent; color: rgba(212,175,106,.4); border: none; cursor: pointer;
+    font-weight: 400; transition: all .18s ease;
+  }
+  .lang-btn.active { background: linear-gradient(135deg,#D4AF6A,#B8903A); color: #1A0510; font-weight: 800; }
+  .lang-btn:active { transform: scale(.95); }
+
+  .es-notice {
+    font-size: 10px; color: rgba(196,164,212,.7); font-style: italic;
+    margin-top: 4px; margin-left: 38px; animation: slideIn .3s ease;
+    display: none;
+  }
+  .es-notice.show { display: block; }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212,175,106,.35), transparent);
+    margin: 13px 0 16px;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: linear-gradient(135deg, rgba(60,15,40,.85), rgba(40,10,30,.9));
+    border-radius: 16px; border: 1px solid rgba(212,175,106,.2);
+    padding: 18px; margin-bottom: 18px; position: relative; overflow: hidden;
+  }
+  .card.glow-anim { animation: glowPulse 3.5s ease-in-out infinite; }
+
+  .card-label {
+    font-weight: 600; font-size: 9px; color: #D4AF6A; margin-bottom: 9px;
+    letter-spacing: .16em; text-transform: uppercase;
+  }
+  .verse-text-el {
+    font-weight: 400; font-size: 14px; line-height: 1.78; color: #EEE0D0;
+    font-style: italic; margin-bottom: 10px;
+  }
+  .verse-ref {
+    font-weight: 700; font-size: 11px; color: #D4AF6A; margin-bottom: 5px;
+    text-transform: uppercase; letter-spacing: .09em;
+  }
+  .verse-reflection {
+    font-weight: 400; font-size: 10px; color: rgba(212,175,106,.55); font-style: italic;
+  }
+
+  /* ── SEARCH CARD ── */
+  .search-card {
+    background: linear-gradient(135deg, rgba(80,20,55,.7), rgba(50,10,40,.85));
+    border-radius: 16px; border: 1px solid rgba(212,175,106,.25);
+    padding: 18px; margin-bottom: 18px;
+    box-shadow: 0 4px 24px rgba(180,80,120,.15);
+  }
+  .search-row { display: flex; gap: 8px; align-items: center; }
+  .search-box {
+    flex: 1; display: flex; align-items: center; gap: 8px;
+    background: rgba(20,5,15,.6); border: 1px solid rgba(212,175,106,.22);
+    border-radius: 10px; padding: 10px 14px;
+  }
+  .search-box input {
+    flex: 1; background: transparent; border: none; outline: none;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 13px;
+    color: #EEE0D0; letter-spacing: .04em; font-weight: 400;
+  }
+  .search-box input::placeholder { color: rgba(212,175,106,.35); }
+  .search-clear {
+    background: none; border: none; color: rgba(212,175,106,.4); cursor: pointer;
+    font-size: 14px; padding: 0; flex-shrink: 0; display: none;
+    font-family: inherit;
+  }
+  .search-clear.show { display: block; }
+  .search-btn {
+    background: linear-gradient(135deg,#D4AF6A,#B8903A); border: none;
+    border-radius: 10px; padding: 10px 16px; flex-shrink: 0; cursor: pointer;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+    font-size: 9px; color: #1A0510; letter-spacing: .14em; text-transform: uppercase;
+    transition: all .18s ease;
+  }
+  .search-btn:hover { opacity: .86; transform: scale(1.04); }
+  .search-btn:active { transform: scale(.97); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .chip {
+    background: rgba(212,175,106,.08); border: 1px solid rgba(212,175,106,.2);
+    border-radius: 100px; padding: 4px 10px; cursor: pointer;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 10px;
+    color: rgba(212,175,106,.7); font-weight: 400; transition: all .15s ease;
+    text-transform: lowercase;
+  }
+  .chip:hover { background: rgba(212,175,106,.15); }
+  .chip:active { transform: scale(.96); }
+
+  /* ── VERSE RESULT CARD ── */
+  .result-card {
+    border-radius: 16px; padding: 20px; margin-bottom: 16px;
+    position: relative; overflow: hidden; display: none;
+  }
+  .result-card.show { display: block; }
+  .result-card .result-label {
+    font-weight: 600; font-size: 9px; margin-bottom: 10px;
+    letter-spacing: .16em; text-transform: uppercase;
+  }
+  .result-card .result-verse {
+    font-weight: 400; font-size: 15px; line-height: 1.82;
+    color: #EEE0D0; font-style: italic; margin-bottom: 13px;
+    animation: fadeUp .5s ease;
+  }
+  .result-card .result-ref {
+    font-weight: 700; font-size: 12px; margin-bottom: 10px;
+    text-transform: uppercase; letter-spacing: .09em;
+  }
+  .prayer-block { padding-top: 11px; margin-top: 4px; }
+  .prayer-label {
+    font-weight: 600; font-size: 8px; color: rgba(212,175,106,.45);
+    letter-spacing: .14em; text-transform: uppercase; margin-bottom: 5px;
+  }
+  .prayer-text {
+    font-weight: 400; font-size: 12px; color: rgba(212,175,106,.65);
+    font-style: italic; line-height: 1.6;
+  }
+  .another-btn {
+    margin-top: 14px; background: rgba(255,255,255,.05); border-radius: 8px;
+    padding: 7px 14px; cursor: pointer; transition: background .2s;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+    font-size: 9px; letter-spacing: .14em; text-transform: uppercase;
+  }
+  .another-btn:hover { background: rgba(255,255,255,.1); }
+
+  /* ── MINI LOADING ── */
+  .mini-loading {
+    text-align: center; padding: 22px 0;
+  }
+  .mini-cross-wrap { animation: floatCross 2.5s ease-in-out infinite; display: inline-block; margin-bottom: 12px; }
+  .mini-loading-text {
+    font-weight: 600; font-size: 10px; color: rgba(212,175,106,.6);
+    letter-spacing: .16em; text-transform: uppercase;
+    animation: pulse 1.5s ease infinite;
+  }
+
+  /* ── SPARKLES ── */
+  .sparkles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; border-radius: 16px; }
+  .sparkle {
+    position: absolute; width: 3px; height: 3px; border-radius: 50%; opacity: .45;
+    animation: twinkle 1.5s ease-in-out infinite;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    text-align: center; font-weight: 600; font-size: 9px;
+    color: rgba(212,175,106,.4); margin-bottom: 11px;
+    letter-spacing: .14em; text-transform: uppercase;
+  }
+
+  /* ── TABS GRID ── */
+  .tabs-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 9px; margin-bottom: 16px; }
+  .tab-btn {
+    background: linear-gradient(135deg, rgba(50,10,35,.7), rgba(35,8,25,.8));
+    border: 1.5px solid rgba(212,175,106,.12); border-radius: 12px;
+    padding: 13px 7px; display: flex; flex-direction: column; align-items: center; gap: 5px;
+    cursor: pointer; transition: all .22s ease; font-family: 'Barlow Condensed', sans-serif;
+  }
+  .tab-btn:hover  { transform: translateY(-2px); }
+  .tab-btn:active { transform: scale(.96); }
+  .tab-btn.active { /* set via JS */ }
+  .tab-emoji { font-size: 20px; line-height: 1; }
+  .tab-label {
+    font-weight: 600; font-size: 8.5px; color: rgba(212,175,106,.5);
+    text-align: center; line-height: 1.2; letter-spacing: .14em; text-transform: uppercase;
+  }
+  .tab-label-sub {
+    display: block; font-size: 7.5px; color: rgba(212,175,106,.25);
+    margin-top: 1px; font-weight: 400; text-transform: none; letter-spacing: 0;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center; padding: 4px 0 28px;
+    font-weight: 400; font-size: 10px; color: rgba(212,175,106,.22); font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<!-- GOLD DUST LAYER -->
+<div id="dust-layer"></div>
+
+<!-- SPLASH SCREEN -->
+<div id="splash">
+  <div class="splash-halo"></div>
+  <div class="splash-cross">
+    <svg width="108" height="108" viewBox="0 0 90 90" fill="none">
+      <defs>
+        <linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%"   stop-color="#F5D98A"/>
+          <stop offset="40%"  stop-color="#D4AF6A"/>
+          <stop offset="100%" stop-color="#8B6914"/>
+        </linearGradient>
+        <filter id="cglow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="5" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <ellipse cx="45" cy="83" rx="18" ry="4" fill="#D4AF6A" opacity="0.15"/>
+      <rect x="37" y="8"  width="16" height="74" rx="6" fill="url(#cg)" filter="url(#cglow)"/>
+      <rect x="14" y="28" width="62" height="16" rx="6" fill="url(#cg)" filter="url(#cglow)"/>
+      <rect x="40" y="10" width="5"  height="28" rx="2" fill="white" opacity="0.16"/>
+      <rect x="16" y="30" width="26" height="5"  rx="2" fill="white" opacity="0.16"/>
+    </svg>
+  </div>
+  <div class="splash-title">
+    <h1>Rooted with Reyna</h1>
+    <p>Scripture for Every Season</p>
+  </div>
+  <div class="dots">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+      <div class="header-left">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <defs>
+            <linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"  stop-color="#F5D98A"/>
+              <stop offset="100%" stop-color="#B8903A"/>
+            </linearGradient>
+          </defs>
+          <rect x="11.5" y="2"   width="5"  height="24" rx="2.5" fill="url(#hg)"/>
+          <rect x="3"    y="9.5" width="22" height="5"  rx="2.5" fill="url(#hg)"/>
+        </svg>
+        <div>
+          <div class="app-name">Rooted with Reyna</div>
+          <div class="app-sub" id="app-sub">Scripture for Every Season</div>
+        </div>
+      </div>
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="btn-en" onclick="switchLang('en')">🇺🇸 EN</button>
+        <button class="lang-btn"        id="btn-es" onclick="switchLang('es')">🇪🇸 ES</button>
+      </div>
+    </div>
+    <div class="es-notice" id="es-notice">✦ Modo Español activado</div>
+    <div class="divider"></div>
+
+    <!-- DAILY VERSE -->
+    <div class="card glow-anim" id="daily-card">
+      <div class="sparkles" id="daily-sparkles"></div>
+      <div class="card-label" id="daily-label">✦ Verse of the Day ✦</div>
+      <div id="daily-content">
+        <div style="text-align:center;padding:14px 0">
+          <div class="mini-loading-text" id="daily-loading-txt">Opening the Word...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEARCH CARD -->
+    <div class="search-card">
+      <div class="card-label" id="search-label">✦ Search by Feeling or Topic ✦</div>
+      <div class="search-row">
+        <div class="search-box">
+          <span style="font-size:14px;flex-shrink:0">🔍</span>
+          <input type="text" id="search-input" placeholder="e.g. forgiveness, hope, fear..." oninput="onSearchInput()" onkeydown="onSearchKey(event)"/>
+          <button class="search-clear" id="search-clear" onclick="clearSearch()">✕</button>
+        </div>
+        <button class="search-btn" id="search-go-btn" onclick="doSearch()">FIND</button>
+      </div>
+      <div class="chips" id="chips-row"></div>
+      <div id="search-result-wrap" style="margin-top:14px"></div>
+    </div>
+
+    <!-- SECTION LABEL -->
+    <div class="section-label" id="section-label">What's on your heart today?</div>
+
+    <!-- EMOTION TABS -->
+    <div class="tabs-grid" id="tabs-grid"></div>
+
+    <!-- TAB VERSE RESULT -->
+    <div id="tab-result-wrap"></div>
+
+    <!-- FOOTER -->
+    <div class="footer" id="footer">"Your word is a lamp to my feet." — Psalm 119:105</div>
+
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   CONFIG
+═══════════════════════════════════════════ */
+const TABS = [
+  { id:"anxiety",    label:"Anxiety",    labelEs:"Ansiedad",  emoji:"🕊️", color:"#C4A4D4", glow:"rgba(196,164,212,0.4)" },
+  { id:"stress",     label:"Stress",     labelEs:"Estrés",    emoji:"🌿", color:"#8FC4A0", glow:"rgba(143,196,160,0.4)" },
+  { id:"loneliness", label:"Loneliness", labelEs:"Soledad",   emoji:"✨", color:"#D4A4C4", glow:"rgba(212,164,196,0.4)" },
+  { id:"love",       label:"Love",       labelEs:"Amor",      emoji:"❤️", color:"#E4908A", glow:"rgba(228,144,138,0.4)" },
+  { id:"anger",      label:"Anger",      labelEs:"Ira",       emoji:"🔥", color:"#E4B080", glow:"rgba(228,176,128,0.4)" },
+  { id:"health",     label:"Health",     labelEs:"Salud",     emoji:"🌱", color:"#A4C880", glow:"rgba(164,200,128,0.4)" },
+];
+const DAILY_TOPICS    = ["faith","hope","grace","peace","strength","wisdom","joy","gratitude"];
+const DAILY_TOPICS_ES = ["fe","esperanza","gracia","paz","fortaleza","sabiduría","alegría","gratitud"];
+const CHIPS_EN = ["forgiveness","hope","fear","pain","gratitude","purpose"];
+const CHIPS_ES = ["perdón","esperanza","miedo","dolor","gratitud","propósito"];
+
+let lang         = "en";
+let activeTabId  = null;
+let tabFetchId   = 0;
+let searchFetchId= 0;
+
+/* ═══════════════════════════════════════════
+   SPLASH
+═══════════════════════════════════════════ */
+setTimeout(()=>{
+  const s = document.getElementById('splash');
+  s.classList.add('fade-out');
+  setTimeout(()=>{
+    s.classList.add('hidden');
+    document.getElementById('app').classList.add('visible');
+    loadDailyVerse();
+  }, 600);
+}, 2500);
+
+/* ═══════════════════════════════════════════
+   GOLD DUST
+═══════════════════════════════════════════ */
+const GOLD_COLORS = ["#F5D98A","#D4AF6A","#FFE9A0","#C89020","#FFF0B0","#E8C060"];
+let dustId = 0;
+
+document.addEventListener('click', function(e){
+  const layer = document.getElementById('dust-layer');
+  const count = 18 + Math.floor(Math.random()*12);
+  const frags = [];
+
+  for(let i=0;i<count;i++){
+    const el = document.createElement('div');
+    el.className = 'dust-particle';
+    const size  = 1.5 + Math.random()*3.5;
+    const color = GOLD_COLORS[Math.floor(Math.random()*GOLD_COLORS.length)];
+    const angle = Math.random() * Math.PI * 2;
+    const dist  = 30 + Math.random()*60;
+    const dx    = Math.cos(angle)*dist;
+    const dy    = Math.sin(angle)*dist - 20;
+    const dur   = 600 + Math.random()*700;
+    const delay = Math.random()*120;
+    const rot   = Math.floor(Math.random()*360)+'deg';
+
+    el.style.cssText = `
+      left:${e.clientX}px; top:${e.clientY}px;
+      width:${size}px; height:${size}px;
+      background:${color};
+      box-shadow: 0 0 ${size*2}px ${color};
+      border-radius:${Math.random()>.4?"50%":"2px"};
+      --dx:${dx}px; --dy:${dy}px; --rot:${rot};
+      --dur:${dur}ms; --delay:${delay}ms;
+      animation-duration:${dur}ms;
+      animation-delay:${delay}ms;
+    `;
+    layer.appendChild(el);
+    frags.push(el);
+  }
+  setTimeout(()=>frags.forEach(f=>f.remove()), 1500);
+});
+
+/* ═══════════════════════════════════════════
+   SPARKLES helper
+═══════════════════════════════════════════ */
+function makeSparkles(color) {
+  const wrap = document.createElement('div');
+  wrap.className = 'sparkles';
+  const positions = [[12,18],[28,28],[44,38],[60,48],[76,58]];
+  positions.forEach(([l,t],i)=>{
+    const d = document.createElement('div');
+    d.className = 'sparkle';
+    d.style.cssText = `left:${l}%;top:${t}%;background:${color};
+      animation-duration:${1.4+i*0.28}s;animation-delay:${i*0.18}s;`;
+    wrap.appendChild(d);
+  });
+  return wrap;
+}
+
+/* ═══════════════════════════════════════════
+   MINI CROSS SVG (small)
+═══════════════════════════════════════════ */
+function miniCrossSVG(size=48){
+  return `<svg width="${size}" height="${size}" viewBox="0 0 90 90" fill="none">
+    <defs>
+      <linearGradient id="mc${size}" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F5D98A"/>
+        <stop offset="40%" stop-color="#D4AF6A"/>
+        <stop offset="100%" stop-color="#8B6914"/>
+      </linearGradient>
+      <filter id="mf${size}" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="4" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <rect x="37" y="8" width="16" height="74" rx="6" fill="url(#mc${size})" filter="url(#mf${size})"/>
+    <rect x="14" y="28" width="62" height="16" rx="6" fill="url(#mc${size})" filter="url(#mf${size})"/>
+  </svg>`;
+}
+
+/* ═══════════════════════════════════════════
+   API
+═══════════════════════════════════════════ */
+async function callClaude(prompt){
+  const res = await fetch("https://api.anthropic.com/v1/messages",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({
+      model:"claude-sonnet-4-6",
+      max_tokens:1000,
+      messages:[{role:"user",content:prompt}]
+    })
+  });
+  const data = await res.json();
+  const raw  = data.content?.find(b=>b.type==="text")?.text||"{}";
+  return JSON.parse(raw.replace(/```json|```/g,"").trim());
+}
+
+/* ═══════════════════════════════════════════
+   DAILY VERSE
+═══════════════════════════════════════════ */
+async function loadDailyVerse(){
+  const el = document.getElementById('daily-content');
+  const idx = new Date().getDate() % DAILY_TOPICS.length;
+  const topic = lang==="es" ? DAILY_TOPICS_ES[idx] : DAILY_TOPICS[idx];
+  const li = lang==="es"
+    ? "Respond entirely in Spanish. Use the Reina-Valera or NVI translation."
+    : "Respond in English. Use the NIV or ESV translation.";
+
+  el.innerHTML = `<div style="text-align:center;padding:14px 0">
+    <div class="mini-loading-text">${lang==="es"?"Abriendo la Palabra...":"Opening the Word..."}</div>
+  </div>`;
+
+  try {
+    const v = await callClaude(`${li}
+Give me one meaningful Bible verse about "${topic}" for today (${new Date().toDateString()}).
+Return ONLY valid JSON, no markdown, no backticks:
+{"reference":"Book Chapter:Verse","text":"full verse text","reflection":"one warm encouragement sentence max 20 words"}`);
+    el.innerHTML = `
+      <div class="verse-text-el">"${v.text}"</div>
+      <div class="verse-ref">${v.reference}</div>
+      ${v.reflection?`<div class="verse-reflection">${v.reflection}</div>`:""}
+    `;
+  } catch(e){
+    const fallback = lang==="es"
+      ? {text:"Este es el día que hizo el SEÑOR; regocijémonos y alegrémonos en él.",reference:"Salmos 118:24",reflection:"Cada nuevo día es un regalo de gracia."}
+      : {text:"This is the day the Lord has made; let us rejoice and be glad in it.",reference:"Psalm 118:24",reflection:"Each new day is a gift of grace."};
+    el.innerHTML = `
+      <div class="verse-text-el">"${fallback.text}"</div>
+      <div class="verse-ref">${fallback.reference}</div>
+      <div class="verse-reflection">${fallback.reflection}</div>
+    `;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   TAB VERSE
+═══════════════════════════════════════════ */
+async function fetchTabVerse(tab){
+  const myId = ++tabFetchId;
+  activeTabId = tab.id;
+  renderTabs();
+
+  const wrap = document.getElementById('tab-result-wrap');
+  const color = tab.color;
+  const glow  = tab.glow;
+
+  // show loading
+  wrap.innerHTML = `
+    <div class="result-card show" style="background:linear-gradient(135deg,${color}18,rgba(60,10,35,0.7));
+      border:1px solid ${color}44; box-shadow:0 8px 32px ${color}33">
+      <div class="mini-loading">
+        <div class="mini-cross-wrap">${miniCrossSVG(48)}</div>
+        <div class="mini-loading-text">${lang==="es"?"Buscando las Escrituras...":"Searching the scriptures..."}</div>
+      </div>
+    </div>`;
+
+  const emotion = lang==="es" ? tab.labelEs : tab.label;
+  const li = lang==="es"
+    ? "Respond entirely in Spanish. Use Reina-Valera or NVI translation."
+    : "Respond in English. Use NIV or ESV translation.";
+  const seed = Math.random().toString(36).slice(2,8);
+  const wordLabel = lang==="es" ? `✦ Una Palabra para Tu ${tab.labelEs}` : `✦ A Word for Your ${tab.label}`;
+  const prayerLabel = lang==="es" ? "🙏 Comienza tu oración" : "🙏 Begin your prayer";
+  const anotherTxt = lang==="es" ? "↻ Otro Versículo" : "↻ Another Verse";
+
+  try {
+    const v = await callClaude(`${li}
+Give me one powerful Bible verse for someone experiencing "${emotion}". Seed:${seed}
+Pick a DIFFERENT verse each time. Do not repeat common picks. Vary your choices.
+Return ONLY valid JSON, no markdown, no backticks:
+{"reference":"Book Chapter:Verse","text":"full verse text","prayer":"short 1-sentence prayer starter max 25 words"}`);
+
+    if(myId !== tabFetchId) return;
+
+    wrap.innerHTML = `
+      <div class="result-card show" style="background:linear-gradient(135deg,${color}18,rgba(60,10,35,0.7));
+        border:1px solid ${color}44; box-shadow:0 8px 32px ${color}33">
+        <div class="sparkles">${buildSparkleHTML(color)}</div>
+        <div class="result-label" style="color:${color}">${wordLabel} ✦</div>
+        <div class="result-verse">"${v.text}"</div>
+        <div class="result-ref" style="color:${color}">— ${v.reference}</div>
+        ${v.prayer?`<div class="prayer-block" style="border-top:1px solid ${color}28">
+          <div class="prayer-label">${prayerLabel}</div>
+          <div class="prayer-text">${v.prayer}</div>
+        </div>`:""}
+        <button class="another-btn" style="border:1px solid ${color}44;color:${color}" onclick="fetchTabVerse(window.TABS_MAP['${tab.id}'])">
+          ${anotherTxt}
+        </button>
+      </div>`;
+  } catch(e){
+    if(myId !== tabFetchId) return;
+    const fallback = {text:"Do not be anxious about anything, but in every situation, by prayer and petition, present your requests to God.",reference:"Philippians 4:6-7",prayer:"Lord, I lay my burdens at Your feet today..."};
+    wrap.innerHTML = `
+      <div class="result-card show" style="background:linear-gradient(135deg,${color}18,rgba(60,10,35,0.7));
+        border:1px solid ${color}44">
+        <div class="result-label" style="color:${color}">${wordLabel} ✦</div>
+        <div class="result-verse">"${fallback.text}"</div>
+        <div class="result-ref" style="color:${color}">— ${fallback.reference}</div>
+        <button class="another-btn" style="border:1px solid ${color}44;color:${color}" onclick="fetchTabVerse(window.TABS_MAP['${tab.id}'])">
+          ${anotherTxt}
+        </button>
+      </div>`;
+  }
+}
+
+function buildSparkleHTML(color){
+  const pos=[[12,18],[28,28],[44,38],[60,48],[76,58]];
+  return pos.map(([l,t],i)=>
+    `<div class="sparkle" style="left:${l}%;top:${t}%;background:${color};animation-duration:${1.4+i*.28}s;animation-delay:${i*.18}s"></div>`
+  ).join('');
+}
+
+/* ═══════════════════════════════════════════
+   SEARCH
+═══════════════════════════════════════════ */
+function onSearchInput(){
+  const q = document.getElementById('search-input').value;
+  document.getElementById('search-clear').classList.toggle('show', q.length>0);
+}
+
+function onSearchKey(e){
+  if(e.key==="Enter"){ e.preventDefault(); doSearch(); }
+}
+
+function clearSearch(){
+  document.getElementById('search-input').value='';
+  document.getElementById('search-clear').classList.remove('show');
+  document.getElementById('search-result-wrap').innerHTML='';
+  document.getElementById('chips-row').style.display='flex';
+}
+
+async function doSearch(){
+  const q = document.getElementById('search-input').value.trim();
+  if(!q) return;
+
+  const myId = ++searchFetchId;
+  const wrap = document.getElementById('search-result-wrap');
+  document.getElementById('chips-row').style.display='none';
+
+  const color = "#C4A4D4";
+  wrap.innerHTML = `
+    <div class="result-card show" style="background:linear-gradient(135deg,${color}18,rgba(60,10,35,0.7));
+      border:1px solid ${color}44">
+      <div class="mini-loading">
+        <div class="mini-cross-wrap">${miniCrossSVG(44)}</div>
+        <div class="mini-loading-text">${lang==="es"?"Buscando las Escrituras...":"Searching the scriptures..."}</div>
+      </div>
+    </div>`;
+
+  const li = lang==="es"
+    ? "Respond entirely in Spanish. Use Reina-Valera or NVI translation."
+    : "Respond in English. Use NIV or ESV translation.";
+  const forLabel = lang==="es" ? `✦ Para "${q}"` : `✦ For "${q}"`;
+  const prayerLabel = lang==="es" ? "🙏 Comienza tu oración" : "🙏 Begin your prayer";
+
+  try {
+    const v = await callClaude(`${li}
+The user is searching for Bible scripture related to: "${q}"
+Find the most meaningful and comforting Bible verse that addresses their feeling, topic, or keywords.
+Return ONLY valid JSON, no markdown, no backticks:
+{"reference":"Book Chapter:Verse","text":"full verse text","prayer":"short 1-sentence prayer starter max 25 words"}`);
+
+    if(myId !== searchFetchId) return;
+    wrap.innerHTML = `
+      <div class="result-card show" style="background:linear-gradient(135deg,${color}18,rgba(60,10,35,0.7));
+        border:1px solid ${color}44; box-shadow:0 8px 32px ${color}33">
+        <div class="sparkles">${buildSparkleHTML(color)}</div>
+        <div class="result-label" style="color:${color}">${forLabel} ✦</div>
+        <div class="result-verse">"${v.text}"</div>
+        <div class="result-ref" style="color:${color}">— ${v.reference}</div>
+        ${v.prayer?`<div class="prayer-block" style="border-top:1px solid ${color}28">
+          <div class="prayer-label">${prayerLabel}</div>
+          <div class="prayer-text">${v.prayer}</div>
+        </div>`:""}
+      </div>`;
+  } catch(e){
+    if(myId !== searchFetchId) return;
+    wrap.innerHTML = `
+      <div class="result-card show" style="background:linear-gradient(135deg,${color}18,rgba(60,10,35,0.7));border:1px solid ${color}44">
+        <div class="result-verse">"And we know that in all things God works for the good of those who love him."</div>
+        <div class="result-ref" style="color:${color}">— Romans 8:28</div>
+      </div>`;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   TABS RENDER
+═══════════════════════════════════════════ */
+window.TABS_MAP = {};
+TABS.forEach(t=>window.TABS_MAP[t.id]=t);
+
+function renderTabs(){
+  const grid = document.getElementById('tabs-grid');
+  grid.innerHTML = TABS.map(tab=>{
+    const isActive = activeTabId===tab.id;
+    const bg = isActive
+      ? `linear-gradient(135deg,${tab.color}28,${tab.color}12)`
+      : `linear-gradient(135deg,rgba(50,10,35,.7),rgba(35,8,25,.8))`;
+    const borderColor = isActive ? `${tab.color}99` : `rgba(212,175,106,.12)`;
+    const shadow = isActive ? `0 4px 18px ${tab.glow}` : "none";
+    const labelColor = isActive ? tab.color : "rgba(212,175,106,.5)";
+    const labelText = lang==="es" ? tab.labelEs : tab.label;
+    const subLabel = lang==="es"
+      ? `<span class="tab-label-sub" style="color:${isActive?tab.color+'77':'rgba(212,175,106,.25)'}">${tab.label}</span>`
+      : "";
+    return `
+      <button class="tab-btn${isActive?' active':''}"
+        style="background:${bg};border-color:${borderColor};box-shadow:${shadow}"
+        onclick="fetchTabVerse(window.TABS_MAP['${tab.id}'])">
+        <span class="tab-emoji">${tab.emoji}</span>
+        <span class="tab-label" style="color:${labelColor};font-weight:${isActive?700:500}">
+          ${labelText}${subLabel}
+        </span>
+      </button>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════
+   CHIPS RENDER
+═══════════════════════════════════════════ */
+function renderChips(){
+  const row = document.getElementById('chips-row');
+  const chips = lang==="es" ? CHIPS_ES : CHIPS_EN;
+  row.innerHTML = chips.map(c=>
+    `<button class="chip" onclick="chipClick('${c}')">${c}</button>`
+  ).join('');
+  row.style.display = 'flex';
+}
+
+function chipClick(chip){
+  document.getElementById('search-input').value = chip;
+  document.getElementById('search-clear').classList.add('show');
+  doSearch();
+}
+
+/* ═══════════════════════════════════════════
+   LANGUAGE SWITCH
+═══════════════════════════════════════════ */
+function switchLang(l){
+  if(l===lang) return;
+  lang = l;
+  activeTabId = null;
+
+  // toggle buttons
+  document.getElementById('btn-en').classList.toggle('active', l==="en");
+  document.getElementById('btn-es').classList.toggle('active', l==="es");
+
+  // es notice
+  document.getElementById('es-notice').classList.toggle('show', l==="es");
+
+  // update static text
+  document.getElementById('app-sub').textContent = l==="es" ? "Las Escrituras para Cada Temporada" : "Scripture for Every Season";
+  document.getElementById('daily-label').textContent = l==="es" ? "✦ Versículo del Día ✦" : "✦ Verse of the Day ✦";
+  document.getElementById('search-label').textContent = l==="es" ? "✦ Buscar por Sentimiento ✦" : "✦ Search by Feeling or Topic ✦";
+  document.getElementById('search-input').placeholder = l==="es" ? "ej. perdón, esperanza, miedo..." : "e.g. forgiveness, hope, fear...";
+  document.getElementById('search-go-btn').textContent = l==="es" ? "BUSCAR" : "FIND";
+  document.getElementById('section-label').textContent = l==="es" ? "¿Qué hay en tu corazón hoy?" : "What's on your heart today?";
+  document.getElementById('footer').textContent = l==="es"
+    ? '"Tu palabra es una lámpara a mis pies." — Salmos 119:105'
+    : '"Your word is a lamp to my feet." — Psalm 119:105';
+
+  // clear results
+  document.getElementById('tab-result-wrap').innerHTML = '';
+  document.getElementById('search-result-wrap').innerHTML = '';
+  document.getElementById('search-input').value = '';
+  document.getElementById('search-clear').classList.remove('show');
+
+  renderTabs();
+  renderChips();
+  loadDailyVerse();
+}
+
+/* ═══════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════ */
+renderTabs();
+renderChips();
+</script>
+</body>
+</html>
