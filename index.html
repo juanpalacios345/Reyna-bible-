@@ -6,802 +6,697 @@
 <title>Rooted with Reyna</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet"/>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Barlow Condensed',sans-serif;
+  background:linear-gradient(145deg,#1A0510 0%,#2D0A1F 30%,#1E0828 60%,#12051E 100%);
+  background-attachment:fixed;min-height:100vh;color:#EEE0D0;
+  -webkit-font-smoothing:antialiased;
+}
 
-  body {
-    font-family: 'Barlow Condensed', sans-serif;
-    background: linear-gradient(145deg, #1A0510 0%, #2D0A1F 30%, #1E0828 60%, #12051E 100%);
-    background-attachment: fixed;
-    min-height: 100vh;
-    color: #EEE0D0;
-    -webkit-font-smoothing: antialiased;
-  }
+@keyframes floatCross{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-14px) rotate(1deg)}}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.2);opacity:1}}
+@keyframes dotPulse{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.6);opacity:1}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 18px rgba(212,175,106,.2)}50%{box-shadow:0 0 38px rgba(212,175,106,.5)}}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:.75;transform:scale(1.5)}}
+@keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
+@keyframes dustFly{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(0)}
+  15%{opacity:1}
+  100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.15) rotate(var(--rot))}
+}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
-  /* ── ANIMATIONS ── */
-  @keyframes floatCross  { 0%,100%{transform:translateY(0) rotate(-1deg)} 50%{transform:translateY(-14px) rotate(1deg)} }
-  @keyframes breathe     { 0%,100%{transform:scale(1);opacity:.7} 50%{transform:scale(1.2);opacity:1} }
-  @keyframes dotPulse    { 0%,100%{transform:scale(1);opacity:.4} 50%{transform:scale(1.6);opacity:1} }
-  @keyframes glowPulse   { 0%,100%{box-shadow:0 0 18px rgba(212,175,106,.18)} 50%{box-shadow:0 0 38px rgba(212,175,106,.5)} }
-  @keyframes twinkle     { 0%,100%{opacity:.2;transform:scale(1)} 50%{opacity:.75;transform:scale(1.5)} }
-  @keyframes pulse       { 0%,100%{opacity:.5} 50%{opacity:1} }
-  @keyframes fadeUp      { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
-  @keyframes slideIn     { from{opacity:0;transform:translateX(8px)} to{opacity:1;transform:translateX(0)} }
-  @keyframes splashFadeIn{ from{opacity:0} to{opacity:1} }
+/* SPLASH */
+#splash{
+  position:fixed;inset:0;z-index:2000;
+  background:linear-gradient(145deg,#1A0510 0%,#2D0A1F 40%,#1A0A2E 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;
+  transition:opacity .6s ease;
+}
+#splash.out{opacity:0;pointer-events:none}
+#splash.gone{display:none}
+.splash-halo{
+  position:absolute;width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,rgba(212,175,106,.22) 0%,transparent 70%);
+  animation:breathe 3s ease-in-out infinite;
+}
+.splash-cross{animation:floatCross 3s ease-in-out infinite;position:relative;z-index:2}
+.splash-title{text-align:center;position:relative;z-index:2}
+.splash-title h1{
+  font-weight:800;font-size:27px;letter-spacing:.13em;text-transform:uppercase;
+  color:#D4AF6A;text-shadow:0 0 28px rgba(212,175,106,.6);line-height:1.1
+}
+.splash-title p{
+  font-weight:400;font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(212,175,106,.45);margin-top:8px
+}
+.dots{display:flex;gap:7px;position:relative;z-index:2}
+.dot{width:5px;height:5px;border-radius:50%;background:#D4AF6A;opacity:.5;animation:dotPulse 1.4s ease-in-out infinite}
+.dot:nth-child(2){animation-delay:.22s}.dot:nth-child(3){animation-delay:.44s}
 
-  @keyframes dustA { 0%{opacity:0;transform:translate(-50%,-50%) scale(0)} 12%{opacity:1} 100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.2) rotate(var(--rot))} }
+/* DUST */
+#dust-layer{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+.dust{position:absolute;border-radius:50%;opacity:0;animation:dustFly var(--dur) ease-out forwards;animation-delay:var(--delay)}
 
-  /* ── SPLASH ── */
-  #splash {
-    position: fixed; inset: 0; z-index: 2000;
-    background: linear-gradient(145deg,#1A0510 0%,#2D0A1F 40%,#1A0A2E 100%);
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px;
-    animation: splashFadeIn .35s ease;
-    transition: opacity .55s ease;
-  }
-  #splash.fade-out { opacity: 0; pointer-events: none; }
-  #splash.hidden   { display: none; }
+/* APP */
+#app{opacity:0;transition:opacity .5s ease .1s;display:flex;flex-direction:column;align-items:center;min-height:100vh}
+#app.visible{opacity:1}
+.container{width:100%;max-width:480px;padding:26px 18px 0}
 
-  .splash-halo {
-    position: absolute; width: 280px; height: 280px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(212,175,106,.22) 0%, transparent 70%);
-    animation: breathe 3s ease-in-out infinite;
-  }
-  .splash-cross { animation: floatCross 3s ease-in-out infinite; position: relative; z-index: 2; }
-  .splash-title { text-align: center; position: relative; z-index: 2; }
-  .splash-title h1 {
-    font-weight: 800; font-size: 27px; letter-spacing: .13em; text-transform: uppercase;
-    color: #D4AF6A; text-shadow: 0 0 28px rgba(212,175,106,.6); line-height: 1.1;
-  }
-  .splash-title p {
-    font-weight: 400; font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
-    color: rgba(212,175,106,.45); margin-top: 8px;
-  }
-  .dots { display: flex; gap: 7px; position: relative; z-index: 2; }
-  .dot {
-    width: 5px; height: 5px; border-radius: 50%; background: #D4AF6A; opacity: .5;
-    animation: dotPulse 1.4s ease-in-out infinite;
-  }
-  .dot:nth-child(2){ animation-delay:.22s }
-  .dot:nth-child(3){ animation-delay:.44s }
+/* HEADER */
+.header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px}
+.header-left{display:flex;align-items:center;gap:10px}
+.app-name{font-weight:800;font-size:18px;color:#D4AF6A;line-height:1.1;letter-spacing:.12em;text-transform:uppercase;text-shadow:0 0 20px rgba(212,175,106,.4)}
+.app-sub{font-weight:400;font-size:8.5px;color:rgba(212,175,106,.4);margin-top:3px;letter-spacing:.14em;text-transform:uppercase}
+.lang-toggle{display:flex;align-items:center;background:rgba(30,5,20,.8);border:1px solid rgba(212,175,106,.2);border-radius:100px;padding:3px;gap:2px;flex-shrink:0;margin-top:2px}
+.lang-btn{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.08em;border-radius:100px;padding:5px 10px;text-transform:uppercase;background:transparent;color:rgba(212,175,106,.4);border:none;cursor:pointer;font-weight:400;transition:all .18s ease}
+.lang-btn.active{background:linear-gradient(135deg,#D4AF6A,#B8903A);color:#1A0510;font-weight:800}
+.lang-btn:active{transform:scale(.95)}
+.es-notice{font-size:10px;color:rgba(196,164,212,.7);font-style:italic;margin-top:4px;margin-left:38px;animation:slideIn .3s ease;display:none}
+.es-notice.show{display:block}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,106,.35),transparent);margin:13px 0 16px}
 
-  /* ── MAIN APP ── */
-  #app {
-    opacity: 0; transition: opacity .5s ease .1s;
-    display: flex; flex-direction: column; align-items: center;
-    min-height: 100vh;
-  }
-  #app.visible { opacity: 1; }
+/* CARDS */
+.card{background:linear-gradient(135deg,rgba(60,15,40,.85),rgba(40,10,30,.9));border-radius:16px;border:1px solid rgba(212,175,106,.2);padding:18px;margin-bottom:18px;position:relative;overflow:hidden}
+.card.glow{animation:glowPulse 3.5s ease-in-out infinite}
+.card-label{font-weight:600;font-size:9px;color:#D4AF6A;margin-bottom:9px;letter-spacing:.16em;text-transform:uppercase}
+.verse-text-el{font-weight:400;font-size:14px;line-height:1.78;color:#EEE0D0;font-style:italic;margin-bottom:10px;animation:fadeUp .5s ease}
+.verse-ref{font-weight:700;font-size:11px;color:#D4AF6A;margin-bottom:5px;text-transform:uppercase;letter-spacing:.09em}
+.verse-reflection{font-weight:400;font-size:10px;color:rgba(212,175,106,.55);font-style:italic}
 
-  .container { width: 100%; max-width: 480px; padding: 26px 18px 0; }
+/* SPARKLES */
+.sparkles{position:absolute;inset:0;overflow:hidden;pointer-events:none;border-radius:16px}
+.sparkle{position:absolute;width:3px;height:3px;border-radius:50%;opacity:.4;animation:twinkle 1.5s ease-in-out infinite}
 
-  /* ── GOLD DUST LAYER ── */
-  #dust-layer { position: fixed; inset: 0; pointer-events: none; z-index: 9999; overflow: hidden; }
-  .dust-particle {
-    position: absolute;
-    border-radius: 50%;
-    opacity: 0;
-    animation: dustA var(--dur) ease-out forwards;
-    animation-delay: var(--delay);
-  }
+/* SEARCH */
+.search-card{background:linear-gradient(135deg,rgba(80,20,55,.7),rgba(50,10,40,.85));border-radius:16px;border:1px solid rgba(212,175,106,.25);padding:18px;margin-bottom:18px;box-shadow:0 4px 24px rgba(180,80,120,.15)}
+.search-row{display:flex;gap:8px;align-items:center}
+.search-box{flex:1;display:flex;align-items:center;gap:8px;background:rgba(20,5,15,.6);border:1px solid rgba(212,175,106,.22);border-radius:10px;padding:10px 14px}
+.search-box input{flex:1;background:transparent;border:none;outline:none;font-family:'Barlow Condensed',sans-serif;font-size:13px;color:#EEE0D0;letter-spacing:.04em;font-weight:400}
+.search-box input::placeholder{color:rgba(212,175,106,.35)}
+.clear-btn{background:none;border:none;color:rgba(212,175,106,.4);cursor:pointer;font-size:14px;padding:0;flex-shrink:0;display:none;font-family:inherit}
+.clear-btn.show{display:block}
+.search-go{background:linear-gradient(135deg,#D4AF6A,#B8903A);border:none;border-radius:10px;padding:10px 16px;flex-shrink:0;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:9px;color:#1A0510;letter-spacing:.14em;text-transform:uppercase;transition:all .18s ease}
+.search-go:hover{opacity:.86;transform:scale(1.04)}
+.search-go:active{transform:scale(.97)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.chip{background:rgba(212,175,106,.08);border:1px solid rgba(212,175,106,.2);border-radius:100px;padding:4px 10px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:10px;color:rgba(212,175,106,.7);font-weight:400;transition:all .15s ease}
+.chip:hover{background:rgba(212,175,106,.16)}
+.chip:active{transform:scale(.96)}
 
-  /* ── HEADER ── */
-  .header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 4px; }
-  .header-left { display: flex; align-items: center; gap: 10px; }
-  .app-name { font-weight: 800; font-size: 18px; color: #D4AF6A; line-height: 1.1;
-    letter-spacing: .12em; text-transform: uppercase; text-shadow: 0 0 20px rgba(212,175,106,.4); }
-  .app-sub  { font-weight: 400; font-size: 8.5px; color: rgba(212,175,106,.4);
-    margin-top: 3px; letter-spacing: .14em; text-transform: uppercase; }
+/* RESULT CARD */
+.result-card{border-radius:16px;padding:20px;margin-bottom:16px;position:relative;overflow:hidden;display:none}
+.result-card.show{display:block;animation:fadeUp .45s ease}
+.result-label{font-weight:600;font-size:9px;margin-bottom:10px;letter-spacing:.16em;text-transform:uppercase}
+.result-verse{font-weight:400;font-size:15px;line-height:1.82;color:#EEE0D0;font-style:italic;margin-bottom:13px}
+.result-ref{font-weight:700;font-size:12px;margin-bottom:10px;text-transform:uppercase;letter-spacing:.09em}
+.prayer-block{padding-top:11px;margin-top:4px}
+.prayer-label{font-weight:600;font-size:8px;color:rgba(212,175,106,.45);letter-spacing:.14em;text-transform:uppercase;margin-bottom:5px}
+.prayer-text{font-weight:400;font-size:12px;color:rgba(212,175,106,.65);font-style:italic;line-height:1.6}
+.another-btn{margin-top:14px;background:rgba(255,255,255,.06);border-radius:8px;padding:8px 16px;cursor:pointer;transition:all .18s ease;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:9px;letter-spacing:.14em;text-transform:uppercase;border:1px solid transparent}
+.another-btn:hover{background:rgba(255,255,255,.12)}
+.another-btn:active{transform:scale(.97)}
+.another-btn:disabled{opacity:.4;cursor:not-allowed}
 
-  .lang-toggle {
-    display: flex; align-items: center;
-    background: rgba(30,5,20,.8); border: 1px solid rgba(212,175,106,.2);
-    border-radius: 100px; padding: 3px; gap: 2px; flex-shrink: 0; margin-top: 2px;
-  }
-  .lang-btn {
-    font-family: 'Barlow Condensed', sans-serif; font-size: 11px; letter-spacing: .08em;
-    border-radius: 100px; padding: 5px 10px; text-transform: uppercase;
-    background: transparent; color: rgba(212,175,106,.4); border: none; cursor: pointer;
-    font-weight: 400; transition: all .18s ease;
-  }
-  .lang-btn.active { background: linear-gradient(135deg,#D4AF6A,#B8903A); color: #1A0510; font-weight: 800; }
-  .lang-btn:active { transform: scale(.95); }
+/* LOADING */
+.loading-box{text-align:center;padding:24px 0}
+.loading-cross{animation:floatCross 2.5s ease-in-out infinite;display:inline-block;margin-bottom:12px}
+.loading-txt{font-weight:600;font-size:10px;color:rgba(212,175,106,.6);letter-spacing:.16em;text-transform:uppercase;animation:pulse 1.5s ease infinite}
 
-  .es-notice {
-    font-size: 10px; color: rgba(196,164,212,.7); font-style: italic;
-    margin-top: 4px; margin-left: 38px; animation: slideIn .3s ease;
-    display: none;
-  }
-  .es-notice.show { display: block; }
+/* TABS */
+.section-label{text-align:center;font-weight:600;font-size:9px;color:rgba(212,175,106,.4);margin-bottom:11px;letter-spacing:.14em;text-transform:uppercase}
+.tabs-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:16px}
+.tab-btn{background:linear-gradient(135deg,rgba(50,10,35,.7),rgba(35,8,25,.8));border:1.5px solid rgba(212,175,106,.12);border-radius:12px;padding:13px 7px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:all .22s ease;font-family:'Barlow Condensed',sans-serif}
+.tab-btn:hover{transform:translateY(-2px)}
+.tab-btn:active{transform:scale(.96)}
+.tab-btn.active{border-width:1.5px}
+.tab-emoji{font-size:20px;line-height:1}
+.tab-label{font-weight:600;font-size:8.5px;color:rgba(212,175,106,.5);text-align:center;line-height:1.2;letter-spacing:.14em;text-transform:uppercase}
+.tab-label-sub{display:block;font-size:7.5px;color:rgba(212,175,106,.25);margin-top:1px;font-weight:400;text-transform:none;letter-spacing:0}
 
-  .divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(212,175,106,.35), transparent);
-    margin: 13px 0 16px;
-  }
+/* ERROR */
+.error-msg{font-size:11px;color:rgba(228,144,138,.8);font-style:italic;margin-top:8px;font-weight:400}
 
-  /* ── CARDS ── */
-  .card {
-    background: linear-gradient(135deg, rgba(60,15,40,.85), rgba(40,10,30,.9));
-    border-radius: 16px; border: 1px solid rgba(212,175,106,.2);
-    padding: 18px; margin-bottom: 18px; position: relative; overflow: hidden;
-  }
-  .card.glow-anim { animation: glowPulse 3.5s ease-in-out infinite; }
-
-  .card-label {
-    font-weight: 600; font-size: 9px; color: #D4AF6A; margin-bottom: 9px;
-    letter-spacing: .16em; text-transform: uppercase;
-  }
-  .verse-text-el {
-    font-weight: 400; font-size: 14px; line-height: 1.78; color: #EEE0D0;
-    font-style: italic; margin-bottom: 10px;
-  }
-  .verse-ref {
-    font-weight: 700; font-size: 11px; color: #D4AF6A; margin-bottom: 5px;
-    text-transform: uppercase; letter-spacing: .09em;
-  }
-  .verse-reflection {
-    font-weight: 400; font-size: 10px; color: rgba(212,175,106,.55); font-style: italic;
-  }
-
-  /* ── SEARCH CARD ── */
-  .search-card {
-    background: linear-gradient(135deg, rgba(80,20,55,.7), rgba(50,10,40,.85));
-    border-radius: 16px; border: 1px solid rgba(212,175,106,.25);
-    padding: 18px; margin-bottom: 18px;
-    box-shadow: 0 4px 24px rgba(180,80,120,.15);
-  }
-  .search-row { display: flex; gap: 8px; align-items: center; }
-  .search-box {
-    flex: 1; display: flex; align-items: center; gap: 8px;
-    background: rgba(20,5,15,.6); border: 1px solid rgba(212,175,106,.22);
-    border-radius: 10px; padding: 10px 14px;
-  }
-  .search-box input {
-    flex: 1; background: transparent; border: none; outline: none;
-    font-family: 'Barlow Condensed', sans-serif; font-size: 13px;
-    color: #EEE0D0; letter-spacing: .04em; font-weight: 400;
-  }
-  .search-box input::placeholder { color: rgba(212,175,106,.35); }
-  .search-clear {
-    background: none; border: none; color: rgba(212,175,106,.4); cursor: pointer;
-    font-size: 14px; padding: 0; flex-shrink: 0; display: none;
-    font-family: inherit;
-  }
-  .search-clear.show { display: block; }
-  .search-btn {
-    background: linear-gradient(135deg,#D4AF6A,#B8903A); border: none;
-    border-radius: 10px; padding: 10px 16px; flex-shrink: 0; cursor: pointer;
-    font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
-    font-size: 9px; color: #1A0510; letter-spacing: .14em; text-transform: uppercase;
-    transition: all .18s ease;
-  }
-  .search-btn:hover { opacity: .86; transform: scale(1.04); }
-  .search-btn:active { transform: scale(.97); }
-
-  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-  .chip {
-    background: rgba(212,175,106,.08); border: 1px solid rgba(212,175,106,.2);
-    border-radius: 100px; padding: 4px 10px; cursor: pointer;
-    font-family: 'Barlow Condensed', sans-serif; font-size: 10px;
-    color: rgba(212,175,106,.7); font-weight: 400; transition: all .15s ease;
-    text-transform: lowercase;
-  }
-  .chip:hover { background: rgba(212,175,106,.15); }
-  .chip:active { transform: scale(.96); }
-
-  /* ── VERSE RESULT CARD ── */
-  .result-card {
-    border-radius: 16px; padding: 20px; margin-bottom: 16px;
-    position: relative; overflow: hidden; display: none;
-  }
-  .result-card.show { display: block; }
-  .result-card .result-label {
-    font-weight: 600; font-size: 9px; margin-bottom: 10px;
-    letter-spacing: .16em; text-transform: uppercase;
-  }
-  .result-card .result-verse {
-    font-weight: 400; font-size: 15px; line-height: 1.82;
-    color: #EEE0D0; font-style: italic; margin-bottom: 13px;
-    animation: fadeUp .5s ease;
-  }
-  .result-card .result-ref {
-    font-weight: 700; font-size: 12px; margin-bottom: 10px;
-    text-transform: uppercase; letter-spacing: .09em;
-  }
-  .prayer-block { padding-top: 11px; margin-top: 4px; }
-  .prayer-label {
-    font-weight: 600; font-size: 8px; color: rgba(212,175,106,.45);
-    letter-spacing: .14em; text-transform: uppercase; margin-bottom: 5px;
-  }
-  .prayer-text {
-    font-weight: 400; font-size: 12px; color: rgba(212,175,106,.65);
-    font-style: italic; line-height: 1.6;
-  }
-  .another-btn {
-    margin-top: 14px; background: rgba(255,255,255,.05); border-radius: 8px;
-    padding: 7px 14px; cursor: pointer; transition: background .2s;
-    font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
-    font-size: 9px; letter-spacing: .14em; text-transform: uppercase;
-  }
-  .another-btn:hover { background: rgba(255,255,255,.1); }
-
-  /* ── MINI LOADING ── */
-  .mini-loading {
-    text-align: center; padding: 22px 0;
-  }
-  .mini-cross-wrap { animation: floatCross 2.5s ease-in-out infinite; display: inline-block; margin-bottom: 12px; }
-  .mini-loading-text {
-    font-weight: 600; font-size: 10px; color: rgba(212,175,106,.6);
-    letter-spacing: .16em; text-transform: uppercase;
-    animation: pulse 1.5s ease infinite;
-  }
-
-  /* ── SPARKLES ── */
-  .sparkles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; border-radius: 16px; }
-  .sparkle {
-    position: absolute; width: 3px; height: 3px; border-radius: 50%; opacity: .45;
-    animation: twinkle 1.5s ease-in-out infinite;
-  }
-
-  /* ── SECTION LABEL ── */
-  .section-label {
-    text-align: center; font-weight: 600; font-size: 9px;
-    color: rgba(212,175,106,.4); margin-bottom: 11px;
-    letter-spacing: .14em; text-transform: uppercase;
-  }
-
-  /* ── TABS GRID ── */
-  .tabs-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 9px; margin-bottom: 16px; }
-  .tab-btn {
-    background: linear-gradient(135deg, rgba(50,10,35,.7), rgba(35,8,25,.8));
-    border: 1.5px solid rgba(212,175,106,.12); border-radius: 12px;
-    padding: 13px 7px; display: flex; flex-direction: column; align-items: center; gap: 5px;
-    cursor: pointer; transition: all .22s ease; font-family: 'Barlow Condensed', sans-serif;
-  }
-  .tab-btn:hover  { transform: translateY(-2px); }
-  .tab-btn:active { transform: scale(.96); }
-  .tab-btn.active { /* set via JS */ }
-  .tab-emoji { font-size: 20px; line-height: 1; }
-  .tab-label {
-    font-weight: 600; font-size: 8.5px; color: rgba(212,175,106,.5);
-    text-align: center; line-height: 1.2; letter-spacing: .14em; text-transform: uppercase;
-  }
-  .tab-label-sub {
-    display: block; font-size: 7.5px; color: rgba(212,175,106,.25);
-    margin-top: 1px; font-weight: 400; text-transform: none; letter-spacing: 0;
-  }
-
-  /* ── FOOTER ── */
-  .footer {
-    text-align: center; padding: 4px 0 28px;
-    font-weight: 400; font-size: 10px; color: rgba(212,175,106,.22); font-style: italic;
-  }
+.footer{text-align:center;padding:4px 0 28px;font-weight:400;font-size:10px;color:rgba(212,175,106,.22);font-style:italic}
 </style>
 </head>
 <body>
 
-<!-- GOLD DUST LAYER -->
 <div id="dust-layer"></div>
 
-<!-- SPLASH SCREEN -->
+<!-- SPLASH -->
 <div id="splash">
   <div class="splash-halo"></div>
   <div class="splash-cross">
     <svg width="108" height="108" viewBox="0 0 90 90" fill="none">
       <defs>
-        <linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%"   stop-color="#F5D98A"/>
-          <stop offset="40%"  stop-color="#D4AF6A"/>
-          <stop offset="100%" stop-color="#8B6914"/>
+        <linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#F5D98A"/><stop offset="40%" stop-color="#D4AF6A"/><stop offset="100%" stop-color="#8B6914"/>
         </linearGradient>
-        <filter id="cglow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="5" result="blur"/>
-          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        <filter id="sf" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
       </defs>
       <ellipse cx="45" cy="83" rx="18" ry="4" fill="#D4AF6A" opacity="0.15"/>
-      <rect x="37" y="8"  width="16" height="74" rx="6" fill="url(#cg)" filter="url(#cglow)"/>
-      <rect x="14" y="28" width="62" height="16" rx="6" fill="url(#cg)" filter="url(#cglow)"/>
-      <rect x="40" y="10" width="5"  height="28" rx="2" fill="white" opacity="0.16"/>
-      <rect x="16" y="30" width="26" height="5"  rx="2" fill="white" opacity="0.16"/>
+      <rect x="37" y="8" width="16" height="74" rx="6" fill="url(#sg)" filter="url(#sf)"/>
+      <rect x="14" y="28" width="62" height="16" rx="6" fill="url(#sg)" filter="url(#sf)"/>
+      <rect x="40" y="10" width="5" height="28" rx="2" fill="white" opacity="0.16"/>
+      <rect x="16" y="30" width="26" height="5" rx="2" fill="white" opacity="0.16"/>
     </svg>
   </div>
-  <div class="splash-title">
-    <h1>Rooted with Reyna</h1>
-    <p>Scripture for Every Season</p>
-  </div>
-  <div class="dots">
-    <div class="dot"></div>
-    <div class="dot"></div>
-    <div class="dot"></div>
-  </div>
+  <div class="splash-title"><h1>Rooted with Reyna</h1><p>Scripture for Every Season</p></div>
+  <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
 </div>
 
-<!-- MAIN APP -->
+<!-- APP -->
 <div id="app">
-  <div class="container">
+<div class="container">
 
-    <!-- HEADER -->
-    <div class="header">
-      <div class="header-left">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-          <defs>
-            <linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%"  stop-color="#F5D98A"/>
-              <stop offset="100%" stop-color="#B8903A"/>
-            </linearGradient>
-          </defs>
-          <rect x="11.5" y="2"   width="5"  height="24" rx="2.5" fill="url(#hg)"/>
-          <rect x="3"    y="9.5" width="22" height="5"  rx="2.5" fill="url(#hg)"/>
-        </svg>
-        <div>
-          <div class="app-name">Rooted with Reyna</div>
-          <div class="app-sub" id="app-sub">Scripture for Every Season</div>
-        </div>
-      </div>
-      <div class="lang-toggle">
-        <button class="lang-btn active" id="btn-en" onclick="switchLang('en')">🇺🇸 EN</button>
-        <button class="lang-btn"        id="btn-es" onclick="switchLang('es')">🇪🇸 ES</button>
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F5D98A"/><stop offset="100%" stop-color="#B8903A"/></linearGradient></defs>
+        <rect x="11.5" y="2" width="5" height="24" rx="2.5" fill="url(#hg)"/>
+        <rect x="3" y="9.5" width="22" height="5" rx="2.5" fill="url(#hg)"/>
+      </svg>
+      <div>
+        <div class="app-name">Rooted with Reyna</div>
+        <div class="app-sub" id="app-sub">Scripture for Every Season</div>
       </div>
     </div>
-    <div class="es-notice" id="es-notice">✦ Modo Español activado</div>
-    <div class="divider"></div>
-
-    <!-- DAILY VERSE -->
-    <div class="card glow-anim" id="daily-card">
-      <div class="sparkles" id="daily-sparkles"></div>
-      <div class="card-label" id="daily-label">✦ Verse of the Day ✦</div>
-      <div id="daily-content">
-        <div style="text-align:center;padding:14px 0">
-          <div class="mini-loading-text" id="daily-loading-txt">Opening the Word...</div>
-        </div>
-      </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btn-en" onclick="switchLang('en')">🇺🇸 EN</button>
+      <button class="lang-btn" id="btn-es" onclick="switchLang('es')">🇪🇸 ES</button>
     </div>
-
-    <!-- SEARCH CARD -->
-    <div class="search-card">
-      <div class="card-label" id="search-label">✦ Search by Feeling or Topic ✦</div>
-      <div class="search-row">
-        <div class="search-box">
-          <span style="font-size:14px;flex-shrink:0">🔍</span>
-          <input type="text" id="search-input" placeholder="e.g. forgiveness, hope, fear..." oninput="onSearchInput()" onkeydown="onSearchKey(event)"/>
-          <button class="search-clear" id="search-clear" onclick="clearSearch()">✕</button>
-        </div>
-        <button class="search-btn" id="search-go-btn" onclick="doSearch()">FIND</button>
-      </div>
-      <div class="chips" id="chips-row"></div>
-      <div id="search-result-wrap" style="margin-top:14px"></div>
-    </div>
-
-    <!-- SECTION LABEL -->
-    <div class="section-label" id="section-label">What's on your heart today?</div>
-
-    <!-- EMOTION TABS -->
-    <div class="tabs-grid" id="tabs-grid"></div>
-
-    <!-- TAB VERSE RESULT -->
-    <div id="tab-result-wrap"></div>
-
-    <!-- FOOTER -->
-    <div class="footer" id="footer">"Your word is a lamp to my feet." — Psalm 119:105</div>
-
   </div>
+  <div class="es-notice" id="es-notice">✦ Modo Español activado</div>
+  <div class="divider"></div>
+
+  <!-- DAILY VERSE -->
+  <div class="card glow" id="daily-card">
+    <div class="sparkles" id="daily-sparkles"></div>
+    <div class="card-label" id="daily-label">✦ Verse of the Day ✦</div>
+    <div id="daily-content">
+      <div class="loading-box"><div class="loading-txt" id="daily-load-txt">Opening the Word...</div></div>
+    </div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-card">
+    <div class="card-label" id="search-label">✦ Search by Feeling or Topic ✦</div>
+    <div class="search-row">
+      <div class="search-box">
+        <span style="font-size:14px;flex-shrink:0">🔍</span>
+        <input type="text" id="search-input" placeholder="e.g. forgiveness, hope, fear..." oninput="onSearchType()" onkeydown="onSearchKey(event)"/>
+        <button class="clear-btn" id="clear-btn" onclick="clearSearch()">✕</button>
+      </div>
+      <button class="search-go" id="search-go" onclick="doSearch()">FIND</button>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div id="search-result"></div>
+  </div>
+
+  <!-- SECTION LABEL -->
+  <div class="section-label" id="section-label">What's on your heart today?</div>
+
+  <!-- TABS -->
+  <div class="tabs-grid" id="tabs-grid"></div>
+
+  <!-- TAB RESULT -->
+  <div id="tab-result"></div>
+
+  <div class="footer" id="footer">"Your word is a lamp to my feet." — Psalm 119:105</div>
+</div>
 </div>
 
 <script>
-/* ═══════════════════════════════════════════
-   CONFIG
-═══════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   DATA
+══════════════════════════════════════════ */
 const TABS = [
-  { id:"anxiety",    label:"Anxiety",    labelEs:"Ansiedad",  emoji:"🕊️", color:"#C4A4D4", glow:"rgba(196,164,212,0.4)" },
-  { id:"stress",     label:"Stress",     labelEs:"Estrés",    emoji:"🌿", color:"#8FC4A0", glow:"rgba(143,196,160,0.4)" },
-  { id:"loneliness", label:"Loneliness", labelEs:"Soledad",   emoji:"✨", color:"#D4A4C4", glow:"rgba(212,164,196,0.4)" },
-  { id:"love",       label:"Love",       labelEs:"Amor",      emoji:"❤️", color:"#E4908A", glow:"rgba(228,144,138,0.4)" },
-  { id:"anger",      label:"Anger",      labelEs:"Ira",       emoji:"🔥", color:"#E4B080", glow:"rgba(228,176,128,0.4)" },
-  { id:"health",     label:"Health",     labelEs:"Salud",     emoji:"🌱", color:"#A4C880", glow:"rgba(164,200,128,0.4)" },
+  {id:"anxiety",   label:"Anxiety",    labelEs:"Ansiedad",  emoji:"🕊️", color:"#C4A4D4", glow:"rgba(196,164,212,0.4)"},
+  {id:"stress",    label:"Stress",     labelEs:"Estrés",    emoji:"🌿", color:"#8FC4A0", glow:"rgba(143,196,160,0.4)"},
+  {id:"loneliness",label:"Loneliness", labelEs:"Soledad",   emoji:"✨", color:"#D4A4C4", glow:"rgba(212,164,196,0.4)"},
+  {id:"love",      label:"Love",       labelEs:"Amor",      emoji:"❤️", color:"#E4908A", glow:"rgba(228,144,138,0.4)"},
+  {id:"anger",     label:"Anger",      labelEs:"Ira",       emoji:"🔥", color:"#E4B080", glow:"rgba(228,176,128,0.4)"},
+  {id:"health",    label:"Health",     labelEs:"Salud",     emoji:"🌱", color:"#A4C880", glow:"rgba(164,200,128,0.4)"},
 ];
-const DAILY_TOPICS    = ["faith","hope","grace","peace","strength","wisdom","joy","gratitude"];
-const DAILY_TOPICS_ES = ["fe","esperanza","gracia","paz","fortaleza","sabiduría","alegría","gratitud"];
-const CHIPS_EN = ["forgiveness","hope","fear","pain","gratitude","purpose"];
-const CHIPS_ES = ["perdón","esperanza","miedo","dolor","gratitud","propósito"];
+window.TABS_MAP = {};
+TABS.forEach(t => window.TABS_MAP[t.id] = t);
 
-let lang         = "en";
-let activeTabId  = null;
-let tabFetchId   = 0;
-let searchFetchId= 0;
+const CHIPS_EN = ["forgiveness","hope","fear","pain","gratitude","purpose","healing","strength"];
+const CHIPS_ES = ["perdón","esperanza","miedo","dolor","gratitud","propósito","sanación","fortaleza"];
 
-/* ═══════════════════════════════════════════
+// Large pools so we rotate through them — never repeat back-to-back
+const VERSE_POOLS = {
+  anxiety:    ["Matthew 6:34","Philippians 4:6-7","1 Peter 5:7","Isaiah 41:10","Psalm 94:19","John 14:27","2 Timothy 1:7","Luke 12:25-26","Romans 8:15","Psalm 46:1-2"],
+  stress:     ["Matthew 11:28-30","Psalm 55:22","Isaiah 26:3","John 16:33","Galatians 6:9","2 Corinthians 4:17","Psalm 23:1-3","Romans 5:3-4","Isaiah 40:31","Proverbs 3:5-6"],
+  loneliness: ["Deuteronomy 31:6","Psalm 139:7-10","Hebrews 13:5","Isaiah 43:2","Matthew 28:20","John 14:18","Romans 8:38-39","Psalm 68:6","Genesis 2:18","Isaiah 49:16"],
+  love:       ["1 Corinthians 13:4-7","John 3:16","Romans 8:38-39","1 John 4:19","Song of Songs 3:4","Jeremiah 31:3","Zephaniah 3:17","Romans 5:8","Ephesians 3:17-19","John 15:13"],
+  anger:      ["Proverbs 15:1","Ephesians 4:26-27","James 1:19-20","Psalm 37:8","Colossians 3:8","Proverbs 29:11","Romans 12:19","Matthew 5:22","Proverbs 16:32","Psalm 4:4"],
+  health:     ["3 John 1:2","Psalm 103:2-3","Jeremiah 30:17","Exodus 15:26","Isaiah 53:5","Mark 5:34","James 5:15","Psalm 41:3","Proverbs 17:22","Philippians 4:13"],
+};
+
+let lang = "en";
+let activeTabId = null;
+let tabFetchCount = 0;    // how many times this tab has been fetched
+let tabFetchId = 0;       // race-condition guard
+let searchFetchId = 0;
+let lastTabVerse = {};    // track last verse per tab to avoid repeats
+let lastSearchVerse = {}; // track last verse per query
+
+/* ══════════════════════════════════════════
    SPLASH
-═══════════════════════════════════════════ */
-setTimeout(()=>{
+══════════════════════════════════════════ */
+setTimeout(() => {
   const s = document.getElementById('splash');
-  s.classList.add('fade-out');
-  setTimeout(()=>{
-    s.classList.add('hidden');
+  s.classList.add('out');
+  setTimeout(() => {
+    s.classList.add('gone');
     document.getElementById('app').classList.add('visible');
+    renderTabs();
+    renderChips();
     loadDailyVerse();
-  }, 600);
-}, 2500);
+  }, 650);
+}, 2600);
 
-/* ═══════════════════════════════════════════
+/* ══════════════════════════════════════════
    GOLD DUST
-═══════════════════════════════════════════ */
-const GOLD_COLORS = ["#F5D98A","#D4AF6A","#FFE9A0","#C89020","#FFF0B0","#E8C060"];
-let dustId = 0;
-
-document.addEventListener('click', function(e){
+══════════════════════════════════════════ */
+const GOLD = ["#F5D98A","#D4AF6A","#FFE9A0","#C89020","#FFF0B0","#E8C060","#F0D070"];
+document.addEventListener('click', e => {
   const layer = document.getElementById('dust-layer');
-  const count = 18 + Math.floor(Math.random()*12);
   const frags = [];
-
-  for(let i=0;i<count;i++){
+  const count = 16 + Math.floor(Math.random()*14);
+  for (let i = 0; i < count; i++) {
     const el = document.createElement('div');
-    el.className = 'dust-particle';
-    const size  = 1.5 + Math.random()*3.5;
-    const color = GOLD_COLORS[Math.floor(Math.random()*GOLD_COLORS.length)];
-    const angle = Math.random() * Math.PI * 2;
-    const dist  = 30 + Math.random()*60;
-    const dx    = Math.cos(angle)*dist;
-    const dy    = Math.sin(angle)*dist - 20;
-    const dur   = 600 + Math.random()*700;
-    const delay = Math.random()*120;
-    const rot   = Math.floor(Math.random()*360)+'deg';
-
-    el.style.cssText = `
-      left:${e.clientX}px; top:${e.clientY}px;
-      width:${size}px; height:${size}px;
-      background:${color};
-      box-shadow: 0 0 ${size*2}px ${color};
-      border-radius:${Math.random()>.4?"50%":"2px"};
-      --dx:${dx}px; --dy:${dy}px; --rot:${rot};
-      --dur:${dur}ms; --delay:${delay}ms;
-      animation-duration:${dur}ms;
-      animation-delay:${delay}ms;
-    `;
+    el.className = 'dust';
+    const size  = 1.5 + Math.random()*4;
+    const color = GOLD[Math.floor(Math.random()*GOLD.length)];
+    const angle = Math.random()*Math.PI*2;
+    const dist  = 25 + Math.random()*65;
+    const dx    = (Math.cos(angle)*dist).toFixed(1);
+    const dy    = (Math.sin(angle)*dist - 20).toFixed(1);
+    const dur   = 550 + Math.random()*750;
+    const delay = Math.random()*100;
+    el.style.cssText = `left:${e.clientX}px;top:${e.clientY}px;width:${size}px;height:${size}px;
+      background:${color};box-shadow:0 0 ${size*2}px ${color};
+      border-radius:${Math.random()>.35?"50%":"2px"};
+      --dx:${dx}px;--dy:${dy}px;--rot:${Math.floor(Math.random()*360)}deg;
+      --dur:${dur}ms;--delay:${delay}ms;
+      animation-duration:${dur}ms;animation-delay:${delay}ms`;
     layer.appendChild(el);
     frags.push(el);
   }
-  setTimeout(()=>frags.forEach(f=>f.remove()), 1500);
+  setTimeout(() => frags.forEach(f => f.remove()), 1600);
 });
 
-/* ═══════════════════════════════════════════
-   SPARKLES helper
-═══════════════════════════════════════════ */
-function makeSparkles(color) {
-  const wrap = document.createElement('div');
-  wrap.className = 'sparkles';
-  const positions = [[12,18],[28,28],[44,38],[60,48],[76,58]];
-  positions.forEach(([l,t],i)=>{
-    const d = document.createElement('div');
-    d.className = 'sparkle';
-    d.style.cssText = `left:${l}%;top:${t}%;background:${color};
-      animation-duration:${1.4+i*0.28}s;animation-delay:${i*0.18}s;`;
-    wrap.appendChild(d);
-  });
-  return wrap;
-}
-
-/* ═══════════════════════════════════════════
-   MINI CROSS SVG (small)
-═══════════════════════════════════════════ */
-function miniCrossSVG(size=48){
+/* ══════════════════════════════════════════
+   CROSS SVG helpers
+══════════════════════════════════════════ */
+function crossSVG(size) {
+  const id = 'g'+size+'_'+Math.random().toString(36).slice(2,5);
   return `<svg width="${size}" height="${size}" viewBox="0 0 90 90" fill="none">
     <defs>
-      <linearGradient id="mc${size}" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#F5D98A"/>
-        <stop offset="40%" stop-color="#D4AF6A"/>
-        <stop offset="100%" stop-color="#8B6914"/>
+      <linearGradient id="${id}" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F5D98A"/><stop offset="40%" stop-color="#D4AF6A"/><stop offset="100%" stop-color="#8B6914"/>
       </linearGradient>
-      <filter id="mf${size}" x="-50%" y="-50%" width="200%" height="200%">
-        <feGaussianBlur stdDeviation="4" result="b"/>
-        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      <filter id="f${id}" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
       </filter>
     </defs>
-    <rect x="37" y="8" width="16" height="74" rx="6" fill="url(#mc${size})" filter="url(#mf${size})"/>
-    <rect x="14" y="28" width="62" height="16" rx="6" fill="url(#mc${size})" filter="url(#mf${size})"/>
+    <rect x="37" y="8" width="16" height="74" rx="6" fill="url(#${id})" filter="url(#f${id})"/>
+    <rect x="14" y="28" width="62" height="16" rx="6" fill="url(#${id})" filter="url(#f${id})"/>
   </svg>`;
 }
 
-/* ═══════════════════════════════════════════
-   API
-═══════════════════════════════════════════ */
-async function callClaude(prompt){
-  const res = await fetch("https://api.anthropic.com/v1/messages",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({
-      model:"claude-sonnet-4-6",
-      max_tokens:1000,
-      messages:[{role:"user",content:prompt}]
-    })
-  });
-  const data = await res.json();
-  const raw  = data.content?.find(b=>b.type==="text")?.text||"{}";
-  return JSON.parse(raw.replace(/```json|```/g,"").trim());
+function sparkleHTML(color) {
+  const pos = [[10,15],[26,26],[42,37],[58,48],[74,59]];
+  return pos.map(([l,t],i)=>
+    `<div class="sparkle" style="left:${l}%;top:${t}%;background:${color};animation-duration:${1.38+i*.3}s;animation-delay:${i*.2}s"></div>`
+  ).join('');
 }
 
-/* ═══════════════════════════════════════════
-   DAILY VERSE
-═══════════════════════════════════════════ */
-async function loadDailyVerse(){
-  const el = document.getElementById('daily-content');
-  const idx = new Date().getDate() % DAILY_TOPICS.length;
-  const topic = lang==="es" ? DAILY_TOPICS_ES[idx] : DAILY_TOPICS[idx];
-  const li = lang==="es"
-    ? "Respond entirely in Spanish. Use the Reina-Valera or NVI translation."
-    : "Respond in English. Use the NIV or ESV translation.";
-
-  el.innerHTML = `<div style="text-align:center;padding:14px 0">
-    <div class="mini-loading-text">${lang==="es"?"Abriendo la Palabra...":"Opening the Word..."}</div>
+function loadingHTML(txt) {
+  return `<div class="loading-box">
+    <div class="loading-cross">${crossSVG(46)}</div>
+    <div class="loading-txt">${txt}</div>
   </div>`;
+}
 
-  try {
-    const v = await callClaude(`${li}
-Give me one meaningful Bible verse about "${topic}" for today (${new Date().toDateString()}).
-Return ONLY valid JSON, no markdown, no backticks:
-{"reference":"Book Chapter:Verse","text":"full verse text","reflection":"one warm encouragement sentence max 20 words"}`);
-    el.innerHTML = `
-      <div class="verse-text-el">"${v.text}"</div>
-      <div class="verse-ref">${v.reference}</div>
-      ${v.reflection?`<div class="verse-reflection">${v.reflection}</div>`:""}
-    `;
-  } catch(e){
-    const fallback = lang==="es"
-      ? {text:"Este es el día que hizo el SEÑOR; regocijémonos y alegrémonos en él.",reference:"Salmos 118:24",reflection:"Cada nuevo día es un regalo de gracia."}
-      : {text:"This is the day the Lord has made; let us rejoice and be glad in it.",reference:"Psalm 118:24",reflection:"Each new day is a gift of grace."};
-    el.innerHTML = `
-      <div class="verse-text-el">"${fallback.text}"</div>
-      <div class="verse-ref">${fallback.reference}</div>
-      <div class="verse-reflection">${fallback.reflection}</div>
-    `;
+/* ══════════════════════════════════════════
+   CLAUDE API — robust with retries & variety
+══════════════════════════════════════════ */
+async function callClaude(prompt, retries=2) {
+  for (let attempt=0; attempt<=retries; attempt++) {
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+          model:"claude-sonnet-4-6",
+          max_tokens:800,
+          messages:[{role:"user", content:prompt}]
+        })
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      const raw = data.content?.find(b=>b.type==="text")?.text || "";
+      // Strip any markdown fences
+      const clean = raw.replace(/```json\s*/gi,"").replace(/```\s*/g,"").trim();
+      // Find the JSON object
+      const match = clean.match(/\{[\s\S]*\}/);
+      if (!match) throw new Error("No JSON found");
+      return JSON.parse(match[0]);
+    } catch(e) {
+      if (attempt === retries) throw e;
+      await new Promise(r => setTimeout(r, 800));
+    }
   }
 }
 
-/* ═══════════════════════════════════════════
-   TAB VERSE
-═══════════════════════════════════════════ */
-async function fetchTabVerse(tab){
+/* ══════════════════════════════════════════
+   BUILD VERSE PROMPT — key to variety
+══════════════════════════════════════════ */
+function buildVersePrompt(type, value, extra={}) {
+  const isEs = lang==="es";
+  const li = isEs
+    ? "Respond entirely in Spanish. Use the Reina-Valera 1960 (RVR1960) Bible translation."
+    : "Respond in English. Use the NIV (New International Version) translation.";
+
+  // Unique entropy: timestamp + random
+  const entropy = Date.now().toString(36) + Math.random().toString(36).slice(2,10);
+
+  // Pool of recent verses to avoid
+  const avoid = extra.avoid ? `\nDO NOT use any of these references: ${extra.avoid.join(", ")}.` : "";
+
+  // Suggested pool to pick from
+  const pool = extra.pool ? `\nPREFERRED pool to choose from (but you may go outside it): ${extra.pool.join(", ")}.` : "";
+
+  let coreInstruction = "";
+  if (type === "tab") {
+    coreInstruction = `Give me one powerful, comforting Bible verse for someone feeling "${value}".
+The verse must DIRECTLY address this emotion with God's comfort, wisdom, or encouragement.
+Choose a verse that feels personal and specific to "${value}" — not a generic popular verse.
+Vary your choice across the entire Bible: Psalms, Proverbs, Gospels, Epistles, Minor Prophets, etc.${pool}${avoid}`;
+  } else if (type === "search") {
+    coreInstruction = `The user typed: "${value}"
+Find the single most meaningful, relevant Bible verse for their feeling, topic, or situation.
+Choose a verse that speaks directly to "${value}" with hope, healing, or truth.${avoid}`;
+  } else if (type === "daily") {
+    coreInstruction = `Give me one uplifting Bible verse about "${value}" for today's devotional.
+Choose something inspiring and less commonly seen — avoid overused favorites.${avoid}`;
+  }
+
+  const jsonShape = type === "daily"
+    ? `{"reference":"Book Chapter:Verse","text":"full verse text here","reflection":"one warm sentence of encouragement, max 18 words"}`
+    : `{"reference":"Book Chapter:Verse","text":"full verse text here","prayer":"a personal 1-sentence prayer starter, max 22 words"}`;
+
+  return `${li}
+${coreInstruction}
+[entropy:${entropy}]
+
+Return ONLY a JSON object — no markdown, no backticks, no explanation:
+${jsonShape}`;
+}
+
+/* ══════════════════════════════════════════
+   DAILY VERSE
+══════════════════════════════════════════ */
+const DAILY_TOPICS    = ["faith","hope","grace","peace","strength","wisdom","joy","gratitude","trust","courage"];
+const DAILY_TOPICS_ES = ["fe","esperanza","gracia","paz","fortaleza","sabiduría","alegría","gratitud","confianza","valentía"];
+
+async function loadDailyVerse() {
+  const el = document.getElementById('daily-content');
+  const lbl = document.getElementById('daily-load-txt');
+  if(lbl) lbl.textContent = lang==="es" ? "Abriendo la Palabra..." : "Opening the Word...";
+  el.innerHTML = loadingHTML(lang==="es" ? "Abriendo la Palabra..." : "Opening the Word...");
+
+  const idx = new Date().getDate() % DAILY_TOPICS.length;
+  const topic = lang==="es" ? DAILY_TOPICS_ES[idx] : DAILY_TOPICS[idx];
+
+  try {
+    const v = await callClaude(buildVersePrompt("daily", topic));
+    el.innerHTML = `
+      <div class="verse-text-el">"${escHtml(v.text)}"</div>
+      <div class="verse-ref">${escHtml(v.reference)}</div>
+      ${v.reflection ? `<div class="verse-reflection">${escHtml(v.reflection)}</div>` : ""}
+    `;
+    // Add sparkles to daily card
+    document.getElementById('daily-sparkles').innerHTML = sparkleHTML('#D4AF6A');
+  } catch(e) {
+    const fb = lang==="es"
+      ? {text:"El SEÑOR es mi pastor; nada me faltará.",reference:"Salmos 23:1",reflection:"Él cuida de ti en cada paso del camino."}
+      : {text:"The Lord is my shepherd; I shall not want.",reference:"Psalm 23:1",reflection:"He tends to your every need with loving care."};
+    el.innerHTML = `<div class="verse-text-el">"${fb.text}"</div><div class="verse-ref">${fb.reference}</div><div class="verse-reflection">${fb.reflection}</div>`;
+  }
+}
+
+/* ══════════════════════════════════════════
+   TAB VERSE — always fresh
+══════════════════════════════════════════ */
+async function fetchTabVerse(tab) {
   const myId = ++tabFetchId;
   activeTabId = tab.id;
   renderTabs();
 
-  const wrap = document.getElementById('tab-result-wrap');
+  const wrap = document.getElementById('tab-result');
   const color = tab.color;
   const glow  = tab.glow;
-
-  // show loading
-  wrap.innerHTML = `
-    <div class="result-card show" style="background:linear-gradient(135deg,${color}18,rgba(60,10,35,0.7));
-      border:1px solid ${color}44; box-shadow:0 8px 32px ${color}33">
-      <div class="mini-loading">
-        <div class="mini-cross-wrap">${miniCrossSVG(48)}</div>
-        <div class="mini-loading-text">${lang==="es"?"Buscando las Escrituras...":"Searching the scriptures..."}</div>
-      </div>
-    </div>`;
-
   const emotion = lang==="es" ? tab.labelEs : tab.label;
-  const li = lang==="es"
-    ? "Respond entirely in Spanish. Use Reina-Valera or NVI translation."
-    : "Respond in English. Use NIV or ESV translation.";
-  const seed = Math.random().toString(36).slice(2,8);
-  const wordLabel = lang==="es" ? `✦ Una Palabra para Tu ${tab.labelEs}` : `✦ A Word for Your ${tab.label}`;
-  const prayerLabel = lang==="es" ? "🙏 Comienza tu oración" : "🙏 Begin your prayer";
-  const anotherTxt = lang==="es" ? "↻ Otro Versículo" : "↻ Another Verse";
 
-  try {
-    const v = await callClaude(`${li}
-Give me one powerful Bible verse for someone experiencing "${emotion}". Seed:${seed}
-Pick a DIFFERENT verse each time. Do not repeat common picks. Vary your choices.
-Return ONLY valid JSON, no markdown, no backticks:
-{"reference":"Book Chapter:Verse","text":"full verse text","prayer":"short 1-sentence prayer starter max 25 words"}`);
-
-    if(myId !== tabFetchId) return;
-
-    wrap.innerHTML = `
-      <div class="result-card show" style="background:linear-gradient(135deg,${color}18,rgba(60,10,35,0.7));
-        border:1px solid ${color}44; box-shadow:0 8px 32px ${color}33">
-        <div class="sparkles">${buildSparkleHTML(color)}</div>
-        <div class="result-label" style="color:${color}">${wordLabel} ✦</div>
-        <div class="result-verse">"${v.text}"</div>
-        <div class="result-ref" style="color:${color}">— ${v.reference}</div>
-        ${v.prayer?`<div class="prayer-block" style="border-top:1px solid ${color}28">
-          <div class="prayer-label">${prayerLabel}</div>
-          <div class="prayer-text">${v.prayer}</div>
-        </div>`:""}
-        <button class="another-btn" style="border:1px solid ${color}44;color:${color}" onclick="fetchTabVerse(window.TABS_MAP['${tab.id}'])">
-          ${anotherTxt}
-        </button>
-      </div>`;
-  } catch(e){
-    if(myId !== tabFetchId) return;
-    const fallback = {text:"Do not be anxious about anything, but in every situation, by prayer and petition, present your requests to God.",reference:"Philippians 4:6-7",prayer:"Lord, I lay my burdens at Your feet today..."};
-    wrap.innerHTML = `
-      <div class="result-card show" style="background:linear-gradient(135deg,${color}18,rgba(60,10,35,0.7));
-        border:1px solid ${color}44">
-        <div class="result-label" style="color:${color}">${wordLabel} ✦</div>
-        <div class="result-verse">"${fallback.text}"</div>
-        <div class="result-ref" style="color:${color}">— ${fallback.reference}</div>
-        <button class="another-btn" style="border:1px solid ${color}44;color:${color}" onclick="fetchTabVerse(window.TABS_MAP['${tab.id}'])">
-          ${anotherTxt}
-        </button>
-      </div>`;
-  }
-}
-
-function buildSparkleHTML(color){
-  const pos=[[12,18],[28,28],[44,38],[60,48],[76,58]];
-  return pos.map(([l,t],i)=>
-    `<div class="sparkle" style="left:${l}%;top:${t}%;background:${color};animation-duration:${1.4+i*.28}s;animation-delay:${i*.18}s"></div>`
-  ).join('');
-}
-
-/* ═══════════════════════════════════════════
-   SEARCH
-═══════════════════════════════════════════ */
-function onSearchInput(){
-  const q = document.getElementById('search-input').value;
-  document.getElementById('search-clear').classList.toggle('show', q.length>0);
-}
-
-function onSearchKey(e){
-  if(e.key==="Enter"){ e.preventDefault(); doSearch(); }
-}
-
-function clearSearch(){
-  document.getElementById('search-input').value='';
-  document.getElementById('search-clear').classList.remove('show');
-  document.getElementById('search-result-wrap').innerHTML='';
-  document.getElementById('chips-row').style.display='flex';
-}
-
-async function doSearch(){
-  const q = document.getElementById('search-input').value.trim();
-  if(!q) return;
-
-  const myId = ++searchFetchId;
-  const wrap = document.getElementById('search-result-wrap');
-  document.getElementById('chips-row').style.display='none';
-
-  const color = "#C4A4D4";
+  // Show loading immediately
   wrap.innerHTML = `
-    <div class="result-card show" style="background:linear-gradient(135deg,${color}18,rgba(60,10,35,0.7));
-      border:1px solid ${color}44">
-      <div class="mini-loading">
-        <div class="mini-cross-wrap">${miniCrossSVG(44)}</div>
-        <div class="mini-loading-text">${lang==="es"?"Buscando las Escrituras...":"Searching the scriptures..."}</div>
-      </div>
+    <div class="result-card show" style="background:linear-gradient(135deg,${color}18,rgba(60,10,35,0.7));border:1px solid ${color}44;box-shadow:0 8px 32px ${color}33">
+      ${loadingHTML(lang==="es" ? "Buscando las Escrituras..." : "Searching the scriptures...")}
     </div>`;
 
-  const li = lang==="es"
-    ? "Respond entirely in Spanish. Use Reina-Valera or NVI translation."
-    : "Respond in English. Use NIV or ESV translation.";
-  const forLabel = lang==="es" ? `✦ Para "${q}"` : `✦ For "${q}"`;
-  const prayerLabel = lang==="es" ? "🙏 Comienza tu oración" : "🙏 Begin your prayer";
+  // Build avoid list from recent verses for this tab
+  const recentForTab = lastTabVerse[tab.id] ? [lastTabVerse[tab.id]] : [];
+  const pool = VERSE_POOLS[tab.id] || [];
 
   try {
-    const v = await callClaude(`${li}
-The user is searching for Bible scripture related to: "${q}"
-Find the most meaningful and comforting Bible verse that addresses their feeling, topic, or keywords.
-Return ONLY valid JSON, no markdown, no backticks:
-{"reference":"Book Chapter:Verse","text":"full verse text","prayer":"short 1-sentence prayer starter max 25 words"}`);
+    const v = await callClaude(buildVersePrompt("tab", emotion, {
+      avoid: recentForTab,
+      pool: pool
+    }));
 
-    if(myId !== searchFetchId) return;
+    if (myId !== tabFetchId) return; // stale — a newer fetch is running
+
+    // Save to avoid list
+    lastTabVerse[tab.id] = v.reference;
+
+    const wordLabel = lang==="es" ? `✦ Una Palabra para Tu ${tab.labelEs}` : `✦ A Word for Your ${tab.label}`;
+    const prayerLbl = lang==="es" ? "🙏 Comienza tu oración" : "🙏 Begin your prayer";
+    const anotherTxt= lang==="es" ? "↻ Otro Versículo" : "↻ Another Verse";
+
     wrap.innerHTML = `
-      <div class="result-card show" style="background:linear-gradient(135deg,${color}18,rgba(60,10,35,0.7));
-        border:1px solid ${color}44; box-shadow:0 8px 32px ${color}33">
-        <div class="sparkles">${buildSparkleHTML(color)}</div>
-        <div class="result-label" style="color:${color}">${forLabel} ✦</div>
-        <div class="result-verse">"${v.text}"</div>
-        <div class="result-ref" style="color:${color}">— ${v.reference}</div>
-        ${v.prayer?`<div class="prayer-block" style="border-top:1px solid ${color}28">
-          <div class="prayer-label">${prayerLabel}</div>
-          <div class="prayer-text">${v.prayer}</div>
-        </div>`:""}
+      <div class="result-card show" style="background:linear-gradient(135deg,${color}18,rgba(60,10,35,0.7));border:1px solid ${color}44;box-shadow:0 8px 32px ${color}33">
+        <div class="sparkles">${sparkleHTML(color)}</div>
+        <div class="result-label" style="color:${color}">${wordLabel} ✦</div>
+        <div class="result-verse">"${escHtml(v.text)}"</div>
+        <div class="result-ref" style="color:${color}">— ${escHtml(v.reference)}</div>
+        ${v.prayer ? `<div class="prayer-block" style="border-top:1px solid ${color}28">
+          <div class="prayer-label">${prayerLbl}</div>
+          <div class="prayer-text">${escHtml(v.prayer)}</div>
+        </div>` : ""}
+        <button class="another-btn" id="another-btn-tab"
+          style="border-color:${color}55;color:${color}"
+          onclick="anotherTabVerse('${tab.id}')">
+          ${anotherTxt}
+        </button>
       </div>`;
-  } catch(e){
-    if(myId !== searchFetchId) return;
+  } catch(e) {
+    if (myId !== tabFetchId) return;
     wrap.innerHTML = `
       <div class="result-card show" style="background:linear-gradient(135deg,${color}18,rgba(60,10,35,0.7));border:1px solid ${color}44">
-        <div class="result-verse">"And we know that in all things God works for the good of those who love him."</div>
-        <div class="result-ref" style="color:${color}">— Romans 8:28</div>
+        <div class="result-label" style="color:${color}">✦ ${lang==="es"?"Error al cargar":"Couldn't load verse"} ✦</div>
+        <div class="error-msg">${lang==="es"?"Toca 'Otro Versículo' para intentar de nuevo.":"Tap 'Another Verse' to try again."}</div>
+        <button class="another-btn" style="border-color:${color}55;color:${color}" onclick="anotherTabVerse('${tab.id}')">
+          ${lang==="es"?"↻ Intentar de nuevo":"↻ Try again"}
+        </button>
       </div>`;
   }
 }
 
-/* ═══════════════════════════════════════════
-   TABS RENDER
-═══════════════════════════════════════════ */
-window.TABS_MAP = {};
-TABS.forEach(t=>window.TABS_MAP[t.id]=t);
+// Separate function so the button always calls with current tab
+async function anotherTabVerse(tabId) {
+  const tab = window.TABS_MAP[tabId];
+  if (!tab) return;
+  // Disable button immediately to prevent double-taps
+  const btn = document.getElementById('another-btn-tab');
+  if (btn) { btn.disabled = true; btn.textContent = lang==="es"?"Cargando...":"Loading..."; }
+  await fetchTabVerse(tab);
+}
 
-function renderTabs(){
+/* ══════════════════════════════════════════
+   SEARCH — fresh every time
+══════════════════════════════════════════ */
+function onSearchType() {
+  const q = document.getElementById('search-input').value;
+  document.getElementById('clear-btn').classList.toggle('show', q.length > 0);
+}
+function onSearchKey(e) {
+  if (e.key === "Enter") { e.preventDefault(); doSearch(); }
+}
+function clearSearch() {
+  document.getElementById('search-input').value = '';
+  document.getElementById('clear-btn').classList.remove('show');
+  document.getElementById('search-result').innerHTML = '';
+  document.getElementById('chips').style.display = 'flex';
+  lastSearchVerse = {};
+}
+
+async function doSearch() {
+  const q = document.getElementById('search-input').value.trim();
+  if (!q) return;
+  const myId = ++searchFetchId;
+
+  document.getElementById('chips').style.display = 'none';
+  const wrap = document.getElementById('search-result');
+  const color = "#C4A4D4";
+
+  wrap.innerHTML = `
+    <div class="result-card show" style="background:linear-gradient(135deg,${color}18,rgba(60,10,35,0.7));border:1px solid ${color}44;margin-top:14px">
+      ${loadingHTML(lang==="es" ? "Buscando las Escrituras..." : "Searching the scriptures...")}
+    </div>`;
+
+  const avoid = lastSearchVerse[q] ? [lastSearchVerse[q]] : [];
+  const prayerLbl = lang==="es" ? "🙏 Comienza tu oración" : "🙏 Begin your prayer";
+  const forLabel  = lang==="es" ? `✦ Para "${q}"` : `✦ For "${q}"`;
+
+  try {
+    const v = await callClaude(buildVersePrompt("search", q, {avoid}));
+    if (myId !== searchFetchId) return;
+
+    lastSearchVerse[q] = v.reference;
+
+    wrap.innerHTML = `
+      <div class="result-card show" style="background:linear-gradient(135deg,${color}18,rgba(60,10,35,0.7));border:1px solid ${color}44;box-shadow:0 8px 32px ${color}33;margin-top:14px">
+        <div class="sparkles">${sparkleHTML(color)}</div>
+        <div class="result-label" style="color:${color}">${forLabel} ✦</div>
+        <div class="result-verse">"${escHtml(v.text)}"</div>
+        <div class="result-ref" style="color:${color}">— ${escHtml(v.reference)}</div>
+        ${v.prayer ? `<div class="prayer-block" style="border-top:1px solid ${color}28">
+          <div class="prayer-label">${prayerLbl}</div>
+          <div class="prayer-text">${escHtml(v.prayer)}</div>
+        </div>` : ""}
+        <button class="another-btn" style="border-color:${color}55;color:${color}" onclick="searchAgain()">
+          ${lang==="es" ? "↻ Otro Versículo" : "↻ Another Verse"}
+        </button>
+      </div>`;
+  } catch(e) {
+    if (myId !== searchFetchId) return;
+    wrap.innerHTML = `
+      <div class="result-card show" style="border:1px solid ${color}44;margin-top:14px">
+        <div class="error-msg">${lang==="es"?"No se pudo cargar. Toca 'Otro Versículo' para reintentar.":"Couldn't load. Tap 'Another Verse' to retry."}</div>
+        <button class="another-btn" style="border-color:${color}55;color:${color}" onclick="searchAgain()">
+          ${lang==="es" ? "↻ Intentar de nuevo" : "↻ Try again"}
+        </button>
+      </div>`;
+  }
+}
+
+function searchAgain() {
+  // Clear cache for this query so we get a different verse
+  const q = document.getElementById('search-input').value.trim();
+  if (lastSearchVerse[q]) delete lastSearchVerse[q];
+  doSearch();
+}
+
+/* ══════════════════════════════════════════
+   TABS RENDER
+══════════════════════════════════════════ */
+function renderTabs() {
   const grid = document.getElementById('tabs-grid');
-  grid.innerHTML = TABS.map(tab=>{
-    const isActive = activeTabId===tab.id;
+  grid.innerHTML = TABS.map(tab => {
+    const isActive = activeTabId === tab.id;
     const bg = isActive
       ? `linear-gradient(135deg,${tab.color}28,${tab.color}12)`
       : `linear-gradient(135deg,rgba(50,10,35,.7),rgba(35,8,25,.8))`;
-    const borderColor = isActive ? `${tab.color}99` : `rgba(212,175,106,.12)`;
-    const shadow = isActive ? `0 4px 18px ${tab.glow}` : "none";
-    const labelColor = isActive ? tab.color : "rgba(212,175,106,.5)";
-    const labelText = lang==="es" ? tab.labelEs : tab.label;
-    const subLabel = lang==="es"
-      ? `<span class="tab-label-sub" style="color:${isActive?tab.color+'77':'rgba(212,175,106,.25)'}">${tab.label}</span>`
-      : "";
+    const bc = isActive ? `${tab.color}99` : `rgba(212,175,106,.12)`;
+    const sh = isActive ? `0 4px 18px ${tab.glow}` : `none`;
+    const lc = isActive ? tab.color : `rgba(212,175,106,.5)`;
+    const lw = isActive ? 700 : 500;
+    const lbl = lang==="es" ? tab.labelEs : tab.label;
+    const sub = lang==="es" ? `<span class="tab-label-sub" style="color:${isActive?tab.color+'77':'rgba(212,175,106,.22)'}">${tab.label}</span>` : "";
     return `
       <button class="tab-btn${isActive?' active':''}"
-        style="background:${bg};border-color:${borderColor};box-shadow:${shadow}"
+        style="background:${bg};border-color:${bc};box-shadow:${sh}"
         onclick="fetchTabVerse(window.TABS_MAP['${tab.id}'])">
         <span class="tab-emoji">${tab.emoji}</span>
-        <span class="tab-label" style="color:${labelColor};font-weight:${isActive?700:500}">
-          ${labelText}${subLabel}
-        </span>
+        <span class="tab-label" style="color:${lc};font-weight:${lw}">${lbl}${sub}</span>
       </button>`;
   }).join('');
 }
 
-/* ═══════════════════════════════════════════
-   CHIPS RENDER
-═══════════════════════════════════════════ */
-function renderChips(){
-  const row = document.getElementById('chips-row');
+/* ══════════════════════════════════════════
+   CHIPS
+══════════════════════════════════════════ */
+function renderChips() {
   const chips = lang==="es" ? CHIPS_ES : CHIPS_EN;
-  row.innerHTML = chips.map(c=>
+  document.getElementById('chips').innerHTML = chips.map(c =>
     `<button class="chip" onclick="chipClick('${c}')">${c}</button>`
   ).join('');
-  row.style.display = 'flex';
+  document.getElementById('chips').style.display = 'flex';
 }
 
-function chipClick(chip){
+function chipClick(chip) {
   document.getElementById('search-input').value = chip;
-  document.getElementById('search-clear').classList.add('show');
+  document.getElementById('clear-btn').classList.add('show');
+  document.getElementById('chips').style.display = 'none';
   doSearch();
 }
 
-/* ═══════════════════════════════════════════
-   LANGUAGE SWITCH
-═══════════════════════════════════════════ */
-function switchLang(l){
-  if(l===lang) return;
+/* ══════════════════════════════════════════
+   LANGUAGE
+══════════════════════════════════════════ */
+function switchLang(l) {
+  if (l === lang) return;
   lang = l;
   activeTabId = null;
+  lastTabVerse = {};
+  lastSearchVerse = {};
 
-  // toggle buttons
   document.getElementById('btn-en').classList.toggle('active', l==="en");
   document.getElementById('btn-es').classList.toggle('active', l==="es");
-
-  // es notice
   document.getElementById('es-notice').classList.toggle('show', l==="es");
 
-  // update static text
-  document.getElementById('app-sub').textContent = l==="es" ? "Las Escrituras para Cada Temporada" : "Scripture for Every Season";
-  document.getElementById('daily-label').textContent = l==="es" ? "✦ Versículo del Día ✦" : "✦ Verse of the Day ✦";
+  // Update static strings
+  document.getElementById('app-sub').textContent     = l==="es" ? "Las Escrituras para Cada Temporada" : "Scripture for Every Season";
+  document.getElementById('daily-label').textContent  = l==="es" ? "✦ Versículo del Día ✦" : "✦ Verse of the Day ✦";
   document.getElementById('search-label').textContent = l==="es" ? "✦ Buscar por Sentimiento ✦" : "✦ Search by Feeling or Topic ✦";
   document.getElementById('search-input').placeholder = l==="es" ? "ej. perdón, esperanza, miedo..." : "e.g. forgiveness, hope, fear...";
-  document.getElementById('search-go-btn').textContent = l==="es" ? "BUSCAR" : "FIND";
-  document.getElementById('section-label').textContent = l==="es" ? "¿Qué hay en tu corazón hoy?" : "What's on your heart today?";
-  document.getElementById('footer').textContent = l==="es"
+  document.getElementById('search-go').textContent    = l==="es" ? "BUSCAR" : "FIND";
+  document.getElementById('section-label').textContent= l==="es" ? "¿Qué hay en tu corazón hoy?" : "What's on your heart today?";
+  document.getElementById('footer').textContent       = l==="es"
     ? '"Tu palabra es una lámpara a mis pies." — Salmos 119:105'
     : '"Your word is a lamp to my feet." — Psalm 119:105';
 
-  // clear results
-  document.getElementById('tab-result-wrap').innerHTML = '';
-  document.getElementById('search-result-wrap').innerHTML = '';
+  // Clear results
+  document.getElementById('tab-result').innerHTML = '';
+  document.getElementById('search-result').innerHTML = '';
   document.getElementById('search-input').value = '';
-  document.getElementById('search-clear').classList.remove('show');
+  document.getElementById('clear-btn').classList.remove('show');
 
   renderTabs();
   renderChips();
   loadDailyVerse();
 }
 
-/* ═══════════════════════════════════════════
-   INIT
-═══════════════════════════════════════════ */
-renderTabs();
-renderChips();
+/* ══════════════════════════════════════════
+   UTILS
+══════════════════════════════════════════ */
+function escHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 </script>
 </body>
 </html>
