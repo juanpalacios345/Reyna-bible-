@@ -5,162 +5,95 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Rooted with Reyna</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{
-  font-family:'Barlow Condensed',sans-serif;
-  background:linear-gradient(145deg,#1A0510 0%,#2D0A1F 30%,#1E0828 60%,#12051E 100%);
-  background-attachment:fixed;min-height:100vh;color:#EEE0D0;
-  -webkit-font-smoothing:antialiased;
-}
-
+body{font-family:"Barlow Condensed",sans-serif;background:linear-gradient(145deg,#1A0510 0%,#2D0A1F 30%,#1E0828 60%,#12051E 100%);background-attachment:fixed;min-height:100vh;color:#EEE0D0;-webkit-font-smoothing:antialiased}
 @keyframes floatCross{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-14px) rotate(1deg)}}
 @keyframes breathe{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.2);opacity:1}}
 @keyframes dotPulse{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.6);opacity:1}}
 @keyframes glowPulse{0%,100%{box-shadow:0 0 18px rgba(212,175,106,.2)}50%{box-shadow:0 0 38px rgba(212,175,106,.5)}}
 @keyframes twinkle{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:.75;transform:scale(1.5)}}
-@keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slideIn{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
-@keyframes dustFly{
-  0%{opacity:0;transform:translate(-50%,-50%) scale(0)}
-  15%{opacity:1}
-  100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.15) rotate(var(--rot))}
-}
-@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-
-/* SPLASH */
-#splash{
-  position:fixed;inset:0;z-index:2000;
-  background:linear-gradient(145deg,#1A0510 0%,#2D0A1F 40%,#1A0A2E 100%);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;
-  transition:opacity .6s ease;
-}
+@keyframes dustFly{0%{opacity:0;transform:translate(-50%,-50%) scale(0)}15%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.15) rotate(var(--rot))}}
+#splash{position:fixed;inset:0;z-index:2000;background:linear-gradient(145deg,#1A0510 0%,#2D0A1F 40%,#1A0A2E 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;transition:opacity .6s ease}
 #splash.out{opacity:0;pointer-events:none}
 #splash.gone{display:none}
-.splash-halo{
-  position:absolute;width:280px;height:280px;border-radius:50%;
-  background:radial-gradient(circle,rgba(212,175,106,.22) 0%,transparent 70%);
-  animation:breathe 3s ease-in-out infinite;
-}
+.splash-halo{position:absolute;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(212,175,106,.22) 0%,transparent 70%);animation:breathe 3s ease-in-out infinite}
 .splash-cross{animation:floatCross 3s ease-in-out infinite;position:relative;z-index:2}
 .splash-title{text-align:center;position:relative;z-index:2}
-.splash-title h1{
-  font-weight:800;font-size:27px;letter-spacing:.13em;text-transform:uppercase;
-  color:#D4AF6A;text-shadow:0 0 28px rgba(212,175,106,.6);line-height:1.1
-}
-.splash-title p{
-  font-weight:400;font-size:11px;letter-spacing:.22em;text-transform:uppercase;
-  color:rgba(212,175,106,.45);margin-top:8px
-}
+.splash-title h1{font-weight:800;font-size:27px;letter-spacing:.13em;text-transform:uppercase;color:#D4AF6A;text-shadow:0 0 28px rgba(212,175,106,.6);line-height:1.1}
+.splash-title p{font-weight:400;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:rgba(212,175,106,.45);margin-top:7px}
+.splash-v1{font-weight:400;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(212,175,106,.3);position:relative;z-index:2}
 .dots{display:flex;gap:7px;position:relative;z-index:2}
 .dot{width:5px;height:5px;border-radius:50%;background:#D4AF6A;opacity:.5;animation:dotPulse 1.4s ease-in-out infinite}
 .dot:nth-child(2){animation-delay:.22s}.dot:nth-child(3){animation-delay:.44s}
-
-/* DUST */
 #dust-layer{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
-.dust{position:absolute;border-radius:50%;opacity:0;animation:dustFly var(--dur) ease-out forwards;animation-delay:var(--delay)}
-
-/* APP */
+.dust{position:absolute;opacity:0;animation:dustFly var(--dur) ease-out forwards;animation-delay:var(--delay)}
 #app{opacity:0;transition:opacity .5s ease .1s;display:flex;flex-direction:column;align-items:center;min-height:100vh}
 #app.visible{opacity:1}
 .container{width:100%;max-width:480px;padding:26px 18px 0}
-
-/* HEADER */
 .header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px}
 .header-left{display:flex;align-items:center;gap:10px}
 .app-name{font-weight:800;font-size:18px;color:#D4AF6A;line-height:1.1;letter-spacing:.12em;text-transform:uppercase;text-shadow:0 0 20px rgba(212,175,106,.4)}
 .app-sub{font-weight:400;font-size:8.5px;color:rgba(212,175,106,.4);margin-top:3px;letter-spacing:.14em;text-transform:uppercase}
 .lang-toggle{display:flex;align-items:center;background:rgba(30,5,20,.8);border:1px solid rgba(212,175,106,.2);border-radius:100px;padding:3px;gap:2px;flex-shrink:0;margin-top:2px}
-.lang-btn{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.08em;border-radius:100px;padding:5px 10px;text-transform:uppercase;background:transparent;color:rgba(212,175,106,.4);border:none;cursor:pointer;font-weight:400;transition:all .18s ease}
+.lang-btn{font-family:"Barlow Condensed",sans-serif;font-size:11px;letter-spacing:.08em;border-radius:100px;padding:5px 10px;text-transform:uppercase;background:transparent;color:rgba(212,175,106,.4);border:none;cursor:pointer;font-weight:400;transition:all .18s ease}
 .lang-btn.active{background:linear-gradient(135deg,#D4AF6A,#B8903A);color:#1A0510;font-weight:800}
 .lang-btn:active{transform:scale(.95)}
 .es-notice{font-size:10px;color:rgba(196,164,212,.7);font-style:italic;margin-top:4px;margin-left:38px;animation:slideIn .3s ease;display:none}
 .es-notice.show{display:block}
 .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,106,.35),transparent);margin:13px 0 16px}
-
-/* CARDS */
 .card{background:linear-gradient(135deg,rgba(60,15,40,.85),rgba(40,10,30,.9));border-radius:16px;border:1px solid rgba(212,175,106,.2);padding:18px;margin-bottom:18px;position:relative;overflow:hidden}
 .card.glow{animation:glowPulse 3.5s ease-in-out infinite}
 .card-label{font-weight:600;font-size:9px;color:#D4AF6A;margin-bottom:9px;letter-spacing:.16em;text-transform:uppercase}
-.verse-text-el{font-weight:400;font-size:14px;line-height:1.78;color:#EEE0D0;font-style:italic;margin-bottom:10px;animation:fadeUp .5s ease}
-.verse-ref{font-weight:700;font-size:11px;color:#D4AF6A;margin-bottom:5px;text-transform:uppercase;letter-spacing:.09em}
-.verse-reflection{font-weight:400;font-size:10px;color:rgba(212,175,106,.55);font-style:italic}
-
-/* SPARKLES */
 .sparkles{position:absolute;inset:0;overflow:hidden;pointer-events:none;border-radius:16px}
 .sparkle{position:absolute;width:3px;height:3px;border-radius:50%;opacity:.4;animation:twinkle 1.5s ease-in-out infinite}
-
-/* SEARCH */
+.daily-vt{font-weight:400;font-size:14px;line-height:1.78;color:#EEE0D0;font-style:italic;margin-bottom:10px;animation:fadeUp .5s ease}
+.daily-vr{font-weight:700;font-size:11px;color:#D4AF6A;margin-bottom:5px;text-transform:uppercase;letter-spacing:.09em}
+.daily-vn{font-weight:400;font-size:10px;color:rgba(212,175,106,.55);font-style:italic;line-height:1.5}
 .search-card{background:linear-gradient(135deg,rgba(80,20,55,.7),rgba(50,10,40,.85));border-radius:16px;border:1px solid rgba(212,175,106,.25);padding:18px;margin-bottom:18px;box-shadow:0 4px 24px rgba(180,80,120,.15)}
 .search-row{display:flex;gap:8px;align-items:center}
 .search-box{flex:1;display:flex;align-items:center;gap:8px;background:rgba(20,5,15,.6);border:1px solid rgba(212,175,106,.22);border-radius:10px;padding:10px 14px}
-.search-box input{flex:1;background:transparent;border:none;outline:none;font-family:'Barlow Condensed',sans-serif;font-size:13px;color:#EEE0D0;letter-spacing:.04em;font-weight:400}
+.search-box input{flex:1;background:transparent;border:none;outline:none;font-family:"Barlow Condensed",sans-serif;font-size:13px;color:#EEE0D0;letter-spacing:.04em;font-weight:400}
 .search-box input::placeholder{color:rgba(212,175,106,.35)}
-.clear-btn{background:none;border:none;color:rgba(212,175,106,.4);cursor:pointer;font-size:14px;padding:0;flex-shrink:0;display:none;font-family:inherit}
+.clear-btn{background:none;border:none;color:rgba(212,175,106,.4);cursor:pointer;font-size:14px;padding:0;flex-shrink:0;display:none}
 .clear-btn.show{display:block}
-.search-go{background:linear-gradient(135deg,#D4AF6A,#B8903A);border:none;border-radius:10px;padding:10px 16px;flex-shrink:0;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:9px;color:#1A0510;letter-spacing:.14em;text-transform:uppercase;transition:all .18s ease}
-.search-go:hover{opacity:.86;transform:scale(1.04)}
-.search-go:active{transform:scale(.97)}
+.search-go{background:linear-gradient(135deg,#D4AF6A,#B8903A);border:none;border-radius:10px;padding:10px 16px;flex-shrink:0;cursor:pointer;font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:9px;color:#1A0510;letter-spacing:.14em;text-transform:uppercase;transition:all .18s ease}
+.search-go:hover{opacity:.86;transform:scale(1.04)}.search-go:active{transform:scale(.97)}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
-.chip{background:rgba(212,175,106,.08);border:1px solid rgba(212,175,106,.2);border-radius:100px;padding:4px 10px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:10px;color:rgba(212,175,106,.7);font-weight:400;transition:all .15s ease}
-.chip:hover{background:rgba(212,175,106,.16)}
-.chip:active{transform:scale(.96)}
-
-/* RESULT CARD */
-.result-card{border-radius:16px;padding:20px;margin-bottom:16px;position:relative;overflow:hidden;display:none}
-.result-card.show{display:block;animation:fadeUp .45s ease}
+.chip{background:rgba(212,175,106,.08);border:1px solid rgba(212,175,106,.2);border-radius:100px;padding:4px 10px;cursor:pointer;font-family:"Barlow Condensed",sans-serif;font-size:10px;color:rgba(212,175,106,.7);font-weight:400;transition:all .15s ease}
+.chip:hover{background:rgba(212,175,106,.16)}.chip:active{transform:scale(.96)}
+.result-card{border-radius:16px;padding:20px;position:relative;overflow:hidden;animation:fadeUp .4s ease;margin-top:8px}
 .result-label{font-weight:600;font-size:9px;margin-bottom:10px;letter-spacing:.16em;text-transform:uppercase}
-.result-verse{font-weight:400;font-size:15px;line-height:1.82;color:#EEE0D0;font-style:italic;margin-bottom:13px}
+.result-verse{font-weight:400;font-size:15px;line-height:1.82;color:#EEE0D0;font-style:italic;margin-bottom:8px}
+.result-devote{font-weight:400;font-size:11px;line-height:1.65;color:rgba(238,224,208,.65);margin-bottom:12px}
 .result-ref{font-weight:700;font-size:12px;margin-bottom:10px;text-transform:uppercase;letter-spacing:.09em}
 .prayer-block{padding-top:11px;margin-top:4px}
 .prayer-label{font-weight:600;font-size:8px;color:rgba(212,175,106,.45);letter-spacing:.14em;text-transform:uppercase;margin-bottom:5px}
 .prayer-text{font-weight:400;font-size:12px;color:rgba(212,175,106,.65);font-style:italic;line-height:1.6}
-.another-btn{margin-top:14px;background:rgba(255,255,255,.06);border-radius:8px;padding:8px 16px;cursor:pointer;transition:all .18s ease;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:9px;letter-spacing:.14em;text-transform:uppercase;border:1px solid transparent}
-.another-btn:hover{background:rgba(255,255,255,.12)}
-.another-btn:active{transform:scale(.97)}
-.another-btn:disabled{opacity:.4;cursor:not-allowed}
-
-/* LOADING */
-.loading-box{text-align:center;padding:24px 0}
-.loading-cross{animation:floatCross 2.5s ease-in-out infinite;display:inline-block;margin-bottom:12px}
-.loading-txt{font-weight:600;font-size:10px;color:rgba(212,175,106,.6);letter-spacing:.16em;text-transform:uppercase;animation:pulse 1.5s ease infinite}
-
-/* TABS */
+.another-btn{margin-top:14px;background:rgba(255,255,255,.06);border-radius:8px;padding:8px 16px;cursor:pointer;transition:all .18s ease;font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:9px;letter-spacing:.14em;text-transform:uppercase;border:1px solid transparent}
+.another-btn:hover{background:rgba(255,255,255,.12)}.another-btn:active{transform:scale(.97)}
 .section-label{text-align:center;font-weight:600;font-size:9px;color:rgba(212,175,106,.4);margin-bottom:11px;letter-spacing:.14em;text-transform:uppercase}
 .tabs-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:16px}
-.tab-btn{background:linear-gradient(135deg,rgba(50,10,35,.7),rgba(35,8,25,.8));border:1.5px solid rgba(212,175,106,.12);border-radius:12px;padding:13px 7px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:all .22s ease;font-family:'Barlow Condensed',sans-serif}
-.tab-btn:hover{transform:translateY(-2px)}
-.tab-btn:active{transform:scale(.96)}
-.tab-btn.active{border-width:1.5px}
+.tab-btn{background:linear-gradient(135deg,rgba(50,10,35,.7),rgba(35,8,25,.8));border:1.5px solid rgba(212,175,106,.12);border-radius:12px;padding:13px 7px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:all .22s ease;font-family:"Barlow Condensed",sans-serif}
+.tab-btn:hover{transform:translateY(-2px)}.tab-btn:active{transform:scale(.96)}
 .tab-emoji{font-size:20px;line-height:1}
 .tab-label{font-weight:600;font-size:8.5px;color:rgba(212,175,106,.5);text-align:center;line-height:1.2;letter-spacing:.14em;text-transform:uppercase}
-.tab-label-sub{display:block;font-size:7.5px;color:rgba(212,175,106,.25);margin-top:1px;font-weight:400;text-transform:none;letter-spacing:0}
-
-/* ERROR */
-.error-msg{font-size:11px;color:rgba(228,144,138,.8);font-style:italic;margin-top:8px;font-weight:400}
-
+.tab-sub{display:block;font-size:7.5px;color:rgba(212,175,106,.22);margin-top:1px;font-weight:400;text-transform:none;letter-spacing:0}
 .footer{text-align:center;padding:4px 0 28px;font-weight:400;font-size:10px;color:rgba(212,175,106,.22);font-style:italic}
 </style>
 </head>
 <body>
-
 <div id="dust-layer"></div>
-
-<!-- SPLASH -->
 <div id="splash">
   <div class="splash-halo"></div>
   <div class="splash-cross">
     <svg width="108" height="108" viewBox="0 0 90 90" fill="none">
       <defs>
-        <linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#F5D98A"/><stop offset="40%" stop-color="#D4AF6A"/><stop offset="100%" stop-color="#8B6914"/>
-        </linearGradient>
-        <filter id="sf" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
+        <linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F5D98A"/><stop offset="40%" stop-color="#D4AF6A"/><stop offset="100%" stop-color="#8B6914"/></linearGradient>
+        <filter id="sf" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
       </defs>
       <ellipse cx="45" cy="83" rx="18" ry="4" fill="#D4AF6A" opacity="0.15"/>
       <rect x="37" y="8" width="16" height="74" rx="6" fill="url(#sg)" filter="url(#sf)"/>
@@ -170,14 +103,11 @@ body{
     </svg>
   </div>
   <div class="splash-title"><h1>Rooted with Reyna</h1><p>Scripture for Every Season</p></div>
+  <div class="splash-v1">v.1</div>
   <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
 </div>
-
-<!-- APP -->
 <div id="app">
 <div class="container">
-
-  <!-- HEADER -->
   <div class="header">
     <div class="header-left">
       <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
@@ -185,518 +115,402 @@ body{
         <rect x="11.5" y="2" width="5" height="24" rx="2.5" fill="url(#hg)"/>
         <rect x="3" y="9.5" width="22" height="5" rx="2.5" fill="url(#hg)"/>
       </svg>
-      <div>
-        <div class="app-name">Rooted with Reyna</div>
-        <div class="app-sub" id="app-sub">Scripture for Every Season</div>
-      </div>
+      <div><div class="app-name">Rooted with Reyna</div><div class="app-sub" id="app-sub">Scripture for Every Season</div></div>
     </div>
     <div class="lang-toggle">
-      <button class="lang-btn active" id="btn-en" onclick="switchLang('en')">🇺🇸 EN</button>
-      <button class="lang-btn" id="btn-es" onclick="switchLang('es')">🇪🇸 ES</button>
+      <button class="lang-btn active" id="btn-en" onclick="switchLang('en')">&#127482;&#127480; EN</button>
+      <button class="lang-btn" id="btn-es" onclick="switchLang('es')">&#127466;&#127480; ES</button>
     </div>
   </div>
-  <div class="es-notice" id="es-notice">✦ Modo Español activado</div>
+  <div class="es-notice" id="es-notice">&#10022; Modo Espa&#241;ol activado</div>
   <div class="divider"></div>
-
-  <!-- DAILY VERSE -->
-  <div class="card glow" id="daily-card">
-    <div class="sparkles" id="daily-sparkles"></div>
-    <div class="card-label" id="daily-label">✦ Verse of the Day ✦</div>
-    <div id="daily-content">
-      <div class="loading-box"><div class="loading-txt" id="daily-load-txt">Opening the Word...</div></div>
-    </div>
-  </div>
-
-  <!-- SEARCH -->
+  <div class="card glow"><div class="sparkles" id="dsp"></div><div class="card-label" id="dl">&#10022; Verse of the Day &#10022;</div><div id="dc"></div></div>
   <div class="search-card">
-    <div class="card-label" id="search-label">✦ Search by Feeling or Topic ✦</div>
+    <div class="card-label" id="sl">&#10022; Search by Feeling or Topic &#10022;</div>
     <div class="search-row">
-      <div class="search-box">
-        <span style="font-size:14px;flex-shrink:0">🔍</span>
-        <input type="text" id="search-input" placeholder="e.g. forgiveness, hope, fear..." oninput="onSearchType()" onkeydown="onSearchKey(event)"/>
-        <button class="clear-btn" id="clear-btn" onclick="clearSearch()">✕</button>
-      </div>
-      <button class="search-go" id="search-go" onclick="doSearch()">FIND</button>
+      <div class="search-box"><span style="font-size:14px;flex-shrink:0">&#128269;</span><input type="text" id="si" placeholder="e.g. forgiveness, hope, fear..." oninput="onST()" onkeydown="onSK(event)"/><button class="clear-btn" id="cb" onclick="clearS()">&#10005;</button></div>
+      <button class="search-go" id="sg-btn" onclick="doSearch()">FIND</button>
     </div>
     <div class="chips" id="chips"></div>
-    <div id="search-result"></div>
+    <div id="sr"></div>
   </div>
-
-  <!-- SECTION LABEL -->
-  <div class="section-label" id="section-label">What's on your heart today?</div>
-
-  <!-- TABS -->
-  <div class="tabs-grid" id="tabs-grid"></div>
-
-  <!-- TAB RESULT -->
-  <div id="tab-result"></div>
-
-  <div class="footer" id="footer">"Your word is a lamp to my feet." — Psalm 119:105</div>
+  <div class="section-label" id="scl">What's on your heart today?</div>
+  <div class="tabs-grid" id="tg"></div>
+  <div id="tr"></div>
+  <div class="footer" id="ft">"Your word is a lamp to my feet." &#8212; Psalm 119:105</div>
 </div>
 </div>
-
 <script>
-/* ══════════════════════════════════════════
-   DATA
-══════════════════════════════════════════ */
-const TABS = [
-  {id:"anxiety",   label:"Anxiety",    labelEs:"Ansiedad",  emoji:"🕊️", color:"#C4A4D4", glow:"rgba(196,164,212,0.4)"},
-  {id:"stress",    label:"Stress",     labelEs:"Estrés",    emoji:"🌿", color:"#8FC4A0", glow:"rgba(143,196,160,0.4)"},
-  {id:"loneliness",label:"Loneliness", labelEs:"Soledad",   emoji:"✨", color:"#D4A4C4", glow:"rgba(212,164,196,0.4)"},
-  {id:"love",      label:"Love",       labelEs:"Amor",      emoji:"❤️", color:"#E4908A", glow:"rgba(228,144,138,0.4)"},
-  {id:"anger",     label:"Anger",      labelEs:"Ira",       emoji:"🔥", color:"#E4B080", glow:"rgba(228,176,128,0.4)"},
-  {id:"health",    label:"Health",     labelEs:"Salud",     emoji:"🌱", color:"#A4C880", glow:"rgba(164,200,128,0.4)"},
-];
-window.TABS_MAP = {};
-TABS.forEach(t => window.TABS_MAP[t.id] = t);
-
-const CHIPS_EN = ["forgiveness","hope","fear","pain","gratitude","purpose","healing","strength"];
-const CHIPS_ES = ["perdón","esperanza","miedo","dolor","gratitud","propósito","sanación","fortaleza"];
-
-// Large pools so we rotate through them — never repeat back-to-back
-const VERSE_POOLS = {
-  anxiety:    ["Matthew 6:34","Philippians 4:6-7","1 Peter 5:7","Isaiah 41:10","Psalm 94:19","John 14:27","2 Timothy 1:7","Luke 12:25-26","Romans 8:15","Psalm 46:1-2"],
-  stress:     ["Matthew 11:28-30","Psalm 55:22","Isaiah 26:3","John 16:33","Galatians 6:9","2 Corinthians 4:17","Psalm 23:1-3","Romans 5:3-4","Isaiah 40:31","Proverbs 3:5-6"],
-  loneliness: ["Deuteronomy 31:6","Psalm 139:7-10","Hebrews 13:5","Isaiah 43:2","Matthew 28:20","John 14:18","Romans 8:38-39","Psalm 68:6","Genesis 2:18","Isaiah 49:16"],
-  love:       ["1 Corinthians 13:4-7","John 3:16","Romans 8:38-39","1 John 4:19","Song of Songs 3:4","Jeremiah 31:3","Zephaniah 3:17","Romans 5:8","Ephesians 3:17-19","John 15:13"],
-  anger:      ["Proverbs 15:1","Ephesians 4:26-27","James 1:19-20","Psalm 37:8","Colossians 3:8","Proverbs 29:11","Romans 12:19","Matthew 5:22","Proverbs 16:32","Psalm 4:4"],
-  health:     ["3 John 1:2","Psalm 103:2-3","Jeremiah 30:17","Exodus 15:26","Isaiah 53:5","Mark 5:34","James 5:15","Psalm 41:3","Proverbs 17:22","Philippians 4:13"],
+// BIBLE VERSE LIBRARY — 120 tab verses + 10 daily from devotional_summaries.docx
+const B={
+// ── ANXIETY ──
+anxiety:[
+{r:"Philippians 4:6-7",e:"Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God. And the peace of God, which transcends all understanding, will guard your hearts and your minds in Christ Jesus.",s:"No se inquieten por nada; más bien, en toda ocasión, con oración y ruego, presenten sus peticiones a Dios y denle gracias. Y la paz de Dios, que sobrepasa todo entendimiento, cuidará sus corazones y sus pensamientos en Cristo Jesús.",d:"Prayer is the antidote to anxiety — not suppression, but surrender. We transfer our burdens to the One who never tires of carrying them.",p:"Lord, I release every worry into Your hands and receive Your peace.",ps:"Señor, pongo mis preocupaciones en Tus manos y recibo Tu paz."},
+{r:"Matthew 6:34",e:"Therefore do not worry about tomorrow, for tomorrow will worry about itself. Each day has enough trouble of its own.",s:"Por lo tanto, no se angustien por el mañana. El mañana se preocupará por sí mismo. Ya tiene bastante cada día con su propio mal.",d:"Jesus calls us to radical presence. Anxiety lives in the future, but God's grace is always in the now.",p:"Father, help me trust You with tomorrow and live fully in today.",ps:"Padre, ayúdame a confiar en Ti con el mañana y vivir plenamente hoy."},
+{r:"1 Peter 5:7",e:"Cast all your anxiety on him because he cares for you.",s:"Depositen en él toda ansiedad, porque él cuida de ustedes.",d:"We were never designed to carry anxiety alone. The invitation to cast our cares is a loving command from a Father who knows our limits.",p:"God, I give You every burden I am carrying. You care for me.",ps:"Dios, Te entrego cada carga que llevo. Tú cuidas de mí."},
+{r:"Isaiah 41:13",e:"For I am the Lord your God who takes hold of your right hand and says to you, Do not fear; I will help you.",s:"Porque yo soy el SEÑOR tu Dios, que te sostiene de la mano derecha y te dice: No temas, yo te ayudaré.",d:"This is the most intimate image of divine care — not distant instruction but personal contact, hand in hand, through every fearful moment.",p:"Lord, take my hand today. I do not have to face this alone.",ps:"Señor, toma mi mano hoy. No tengo que enfrentar esto solo."},
+{r:"Psalm 55:22",e:"Cast your cares on the Lord and he will sustain you; he will never let the righteous be shaken.",s:"Encomienda al SEÑOR tus afanes, y él te sostendrá; no permitirá que el justo caiga.",d:"Release is not defeat — it is the beginning of divine support that never falters. God catches everything we throw His way.",p:"Lord, I cast every anxious thought onto You right now.",ps:"Señor, arrojo cada pensamiento ansioso sobre Ti ahora mismo."},
+{r:"John 14:1",e:"Do not let your hearts be troubled. You believe in God; believe also in me.",s:"No se angustien. Crean en Dios, y crean también en mí.",d:"Anxiety and trust cannot fully coexist. Where trust grows, anxiety loses its grip. Jesus calls the troubled heart to active faith.",p:"Jesus, I choose to trust You over every troubled thought in my heart.",ps:"Jesús, elijo confiar en Ti sobre cada pensamiento perturbado en mi corazón."},
+{r:"Matthew 6:27",e:"Can any one of you by worrying add a single hour to your life?",s:"¿Quién de ustedes, por mucho que se preocupe, puede añadir una sola hora al curso de su vida?",d:"Worry gives the illusion of control while producing none of it. Real change comes from prayer, not from panic.",p:"Lord, free me from the illusion that worry helps. I surrender control to You.",ps:"Señor, libérame de la ilusión de que preocuparme ayuda. Te entrego el control."},
+{r:"Psalm 94:19",e:"When anxiety was great within me, your consolation brought me joy.",s:"Cuando en mí la angustia iba en aumento, tu consuelo llenaba mi alma de alegría.",d:"God does not dismiss our anxiety — He enters it with joy. His consolation is bigger than any burden we carry.",p:"Father, let Your consolation replace my anxiety with unexpected joy.",ps:"Padre, que Tu consuelo reemplace mi ansiedad con gozo inesperado."},
+{r:"Luke 12:22-26",e:"Do not worry about your life, what you will eat; or about your body, what you will wear. For life is more than food, and the body more than clothes.",s:"No se preocupen por la vida, qué comerán; ni por el cuerpo, qué vestirán. La vida tiene más valor que la comida, y el cuerpo más que la ropa.",d:"If God tends creation so faithfully, how much more will He care for His own children? Anxiety forgets the scale of God's attention.",p:"Lord, You care for creation. Help me trust You to care for me.",ps:"Señor, cuidas de la creación. Ayúdame a confiar en que me cuidas a mí."},
+{r:"Romans 8:38-39",e:"For I am convinced that neither death nor life, neither angels nor demons, neither the present nor the future, will be able to separate us from the love of God.",s:"Pues estoy convencido de que ni la muerte ni la vida, ni los ángeles ni los demonios, ni lo presente ni lo por venir, podrá apartarnos del amor que Dios nos ha manifestado en Cristo Jesús nuestro Señor.",d:"God's love is the one permanent certainty. Anxiety tells us we are alone — this verse destroys that lie completely.",p:"Nothing can separate me from Your love, Lord. That is enough.",ps:"Nada puede separarme de Tu amor, Señor. Eso es suficiente."},
+{r:"Isaiah 26:3",e:"You will keep in perfect peace those whose minds are steadfast, because they trust in you.",s:"Al de carácter firme lo guardarás en perfecta paz, porque en ti confía.",d:"Peace is not the absence of anxiety's triggers but the presence of God in the mind. Steadfast trust becomes the anchor that holds us through the storm.",p:"God, keep my mind fixed on You and not on my fears.",ps:"Dios, mantén mi mente fija en Ti y no en mis miedos."},
+{r:"Psalm 46:10",e:"Be still, and know that I am God.",s:"Quédense quietos, reconozcan que yo soy Dios.",d:"The antidote to anxious activity and racing thought is a return to the knowledge of who God is. In stillness, anxiety has no room to breathe.",p:"Lord, in this anxious moment I choose to be still and know You are God.",ps:"Señor, en este momento ansioso elijo estar quieto y saber que Eres Dios."},
+{r:"Psalm 37:5",e:"Commit your way to the Lord; trust in him and he will do this.",s:"Encomienda al SEÑOR tu camino; confía en él, y él actuará.",d:"Anxiety springs from the gap between what we cannot control and what we desperately want to. Commitment hands the gap to God, and trust bridges it.",p:"Lord, I commit my way entirely to You. I trust You to lead me.",ps:"Señor, Te encomiendo mi camino completamente. Confío en que me guíes."},
+{r:"Proverbs 12:25",e:"Anxiety weighs down the heart, but a kind word cheers it up.",s:"La angustia deprime al hombre; la palabra amable lo alegra.",d:"His word — the ultimate kind word — has the power to lift what no circumstance can. God speaks to every anxious heart.",p:"Lord, speak a kind word to my heart today and lift this heaviness.",ps:"Señor, habla una palabra amable a mi corazón hoy y levanta esta pesadez."},
+{r:"2 Thessalonians 3:16",e:"Now may the Lord of peace himself give you peace at all times and in every way.",s:"Que el Señor de paz les conceda su paz siempre y en todas las circunstancias.",d:"The Lord of peace is not just a giver of peace — He is peace. His presence is the thing we need, and His presence is what He has promised.",p:"Lord of peace, come into this anxious moment. You are my peace.",ps:"Señor de paz, ven a este momento ansioso. Tú eres mi paz."},
+{r:"Psalm 23:1",e:"The Lord is my shepherd, I lack nothing.",s:"El SEÑOR es mi pastor, nada me falta.",d:"The awareness of God as shepherd dismantles the core anxiety that we might not have enough or be enough. Under His care, nothing is truly lacking.",p:"You are my shepherd, Lord. I trust You to provide all that I need.",ps:"Eres mi pastor, Señor. Confío en que proveerás todo lo que necesito."},
+{r:"Matthew 11:28-30",e:"Come to me, all you who are weary and burdened, and I will give you rest. Take my yoke upon you and learn from me, for I am gentle and humble in heart.",s:"Vengan a mí todos ustedes que están cansados y agobiados, y yo les daré descanso. Carguen con mi yugo y aprendan de mí, pues yo soy apacible y humilde de corazón.",d:"Jesus invites the anxious to exchange their heavy load for His. His yoke is easy and His burden is light.",p:"Jesus, I come to You with all I am carrying. Give me Your rest.",ps:"Jesús, vengo a Ti con todo lo que cargo. Dame Tu descanso."},
+{r:"Numbers 6:24-26",e:"The Lord bless you and keep you; the Lord make his face shine on you and be gracious to you; the Lord turn his face toward you and give you peace.",s:"El SEÑOR te bendiga y te guarde; el SEÑOR te mire con agrado y te extienda su amor; el SEÑOR te muestre su favor y te conceda la paz.",d:"This priestly blessing is God's antidote to anxiety — the knowledge that His face is turned toward you with grace, not with judgment.",p:"Lord, shine Your face on me today. Let me feel Your grace and peace.",ps:"Señor, ilumina Tu rostro sobre mí hoy. Déjame sentir Tu gracia y paz."},
+{r:"John 16:33",e:"I have told you these things, so that in me you may have peace. In this world you will have trouble. But take heart! I have overcome the world.",s:"Yo les he dicho estas cosas para que en mí hallen paz. En este mundo afrontarán aflicciones, pero anímense. Yo he vencido al mundo.",d:"The battle is real, but the outcome is decided. Jesus validates the reality of difficulty while announcing its defeat.",p:"Jesus, remind me that You have already overcome everything I face.",ps:"Jesús, recuérdame que ya has superado todo lo que enfrento."},
+{r:"Psalm 121:1-2",e:"I lift up my eyes to the mountains — where does my help come from? My help comes from the Lord, the Maker of heaven and earth.",s:"A las montañas levanto mis ojos. De dónde ha de venir mi ayuda? Mi ayuda proviene del SEÑOR, creador del cielo y de la tierra.",d:"The practice of looking up — literally and spiritually — reorients our perspective from the problem to the Provider who never sleeps.",p:"Lord, I lift my eyes to You. My help comes from You alone.",ps:"Señor, levanto mis ojos hacia Ti. Mi ayuda viene solo de Ti."},
+],
+// ── STRESS ──
+stress:[
+{r:"Matthew 11:28",e:"Come to me, all you who are weary and burdened, and I will give you rest.",s:"Vengan a mí todos ustedes que están cansados y agobiados, y yo les daré descanso.",d:"Stress is a signal that we have been carrying what was never meant for us alone. The invitation to come is always open.",p:"Jesus, I come to You exhausted. Take this burden and give me rest.",ps:"Jesús, vengo a Ti agotado. Toma esta carga y dame descanso."},
+{r:"Psalm 55:22",e:"Cast your cares on the Lord and he will sustain you; he will never let the righteous be shaken.",s:"Encomienda al SEÑOR tus afanes, y él te sostendrá; no permitirá que el justo caiga.",d:"Stress accumulates when we carry what we were never meant to carry alone. To cast is an act of trust — releasing grip so God can take hold.",p:"Lord, I cast every stress and care onto You right now.",ps:"Señor, arrojo todo estrés y cuidado sobre Ti ahora mismo."},
+{r:"1 Peter 5:7",e:"Cast all your anxiety on him because he cares for you.",s:"Depositen en él toda ansiedad, porque él cuida de ustedes.",d:"The logic of releasing stress to God begins with this truth: He cares. Not vaguely or conditionally — He actively, personally cares for you.",p:"God, I release all my stress to You because I know You care for me.",ps:"Dios, libero todo mi estrés hacia Ti porque sé que me cuidas."},
+{r:"John 14:27",e:"Peace I leave with you; my peace I give you. I do not give to you as the world gives. Do not let your hearts be troubled and do not be afraid.",s:"La paz les dejo; mi paz les doy. Yo no se la doy a ustedes como la da el mundo. No se turbe su corazón ni tenga miedo.",d:"Worldly stress reduction is temporary and conditional. Jesus offers peace rooted in His own unshakeable nature — independent of circumstances.",p:"Jesus, let Your peace that passes understanding rule in my heart today.",ps:"Jesús, que Tu paz que sobrepasa el entendimiento reine en mi corazón hoy."},
+{r:"Psalm 46:1-2",e:"God is our refuge and strength, an ever-present help in trouble. Therefore we will not fear, though the earth give way.",s:"Dios es nuestro amparo y nuestra fortaleza, nuestra ayuda segura en momentos de angustia. Por eso, no temeremos aunque se desmorone la tierra.",d:"Stress reaches its peak when we feel there is no safe place. God offers Himself as the ever-present refuge that nothing can remove.",p:"You are my refuge, Lord. I run to You from all that presses in.",ps:"Eres mi refugio, Señor. Corro hacia Ti de todo lo que me oprime."},
+{r:"Isaiah 40:31",e:"But those who hope in the Lord will renew their strength. They will soar on wings like eagles; they will run and not grow weary.",s:"Pero los que confían en el SEÑOR renovarán sus fuerzas; volarán como las águilas: correrán y no se fatigarán.",d:"Stress depletes strength; waiting on God renews it. Slowing down before God is what restores capacity for the road ahead.",p:"Father, as I wait on You, renew my strength and lift me up.",ps:"Padre, mientras espero en Ti, renueva mis fuerzas y levántame."},
+{r:"Mark 6:31",e:"Jesus said to them: Come with me by yourselves to a quiet place and get some rest.",s:"Jesús les dijo: Vengan conmigo ustedes solos a un lugar tranquilo y descansen un poco.",d:"Even in seasons of great demand, Jesus insisted on rest. Stress is often a sign that we have skipped the rest God requires.",p:"Lord, lead me to a quiet place with You to find real rest.",ps:"Señor, llévame a un lugar tranquilo contigo para encontrar descanso real."},
+{r:"Galatians 6:9",e:"Let us not become weary in doing good, for at the proper time we will reap a harvest if we do not give up.",s:"No nos cansemos de hacer el bien, porque a su debido tiempo cosecharemos si no nos damos por vencidos.",d:"Stress says the effort is not worth it. But God promises a harvest — not visible yet, but certain. Endurance is rewarded.",p:"Lord, give me strength to keep going. The harvest is coming.",ps:"Señor, dame fuerza para seguir. La cosecha está llegando."},
+{r:"Proverbs 3:5-6",e:"Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.",s:"Confía en el SEÑOR de todo corazón, y no en tu propia inteligencia. Reconócelo en todos tus caminos, y él allanará tus sendas.",d:"Stress frequently comes from trying to figure everything out on our own. Trusting God's understanding over our own is the greatest stress relief available.",p:"God, I surrender my plans. I trust Your understanding above my own.",ps:"Dios, me rindo a Tus planes. Confío en Tu entendimiento sobre el mío."},
+{r:"Romans 8:26",e:"The Spirit helps us in our weakness. We do not know what we ought to pray for, but the Spirit himself intercedes for us.",s:"En nuestra debilidad el Espíritu acude a ayudarnos. No sabemos qué pedir, pero el Espíritu mismo intercede por nosotros.",d:"We are never alone — even in the moments when we cannot articulate our need. The Spirit steps in to intercede where our words run out.",p:"Holy Spirit, intercede for me. I don't have words but You do.",ps:"Espíritu Santo, intercede por mí. No tengo palabras pero Tú sí."},
+{r:"Psalm 31:7",e:"I will be glad and rejoice in your love, for you saw my affliction and knew the anguish of my soul.",s:"Me alegraré y me regocijaré en tu amor, porque tú has visto mi aflicción y conoces las angustias de mi alma.",d:"God is not unaware of the stress you carry. He sees it, He knows it, and He responds with unfailing love.",p:"Lord, You see my anguish. Let me find joy in Your love today.",ps:"Señor, ves mi angustia. Déjame encontrar gozo en Tu amor hoy."},
+{r:"Matthew 6:33",e:"But seek first his kingdom and his righteousness, and all these things will be given to you as well.",s:"Más bien, busquen primeramente el reino de Dios y su justicia, y todas estas cosas les serán añadidas.",d:"Much stress comes from pursuing the wrong things first. When we reorder our priorities around God's kingdom, He takes responsibility for the rest.",p:"Lord, help me seek Your kingdom first and trust You with everything else.",ps:"Señor, ayúdame a buscar Tu reino primero y confiar en Ti con todo lo demás."},
+{r:"Psalm 16:8",e:"I keep my eyes always on the Lord. With him at my right hand, I will not be shaken.",s:"Siempre tengo presente al SEÑOR; con él a mi derecha, nada me hará caer.",d:"The secret to being unshaken by stress is not the absence of pressure but the constant presence of God consciously set before us.",p:"Lord, I set my eyes on You right now. With You, I will not be shaken.",ps:"Señor, pongo mis ojos en Ti ahora mismo. Contigo, no seré sacudido."},
+{r:"Numbers 11:14-17",e:"I cannot carry all these people by myself; the burden is too heavy for me.",s:"No puedo yo solo con todo este pueblo; es una carga demasiado pesada para mí.",d:"Moses was overwhelmed carrying the burden alone. God responded by distributing the load. Sometimes the solution to stress is learning to share burdens.",p:"Lord, show me where to share my burdens and who to trust with them.",ps:"Señor, muéstrame dónde compartir mis cargas y en quién confiar."},
+{r:"2 Kings 6:16",e:"Don't be afraid. Those who are with us are more than those who are with them.",s:"No tengas miedo. Los que están con nosotros son más que los que están con ellos.",d:"Stress shrinks our field of vision to the opposition. God opens our eyes to see the heavenly resources already surrounding us on every side.",p:"Lord, open my eyes to see all the support You have placed around me.",ps:"Señor, abre mis ojos para ver todo el apoyo que has puesto a mi alrededor."},
+{r:"Psalm 4:8",e:"In peace I will lie down and sleep, for you alone, Lord, make me dwell in safety.",s:"En paz me acuesto y me duermo, porque solo tú, SEÑOR, me haces vivir confiado.",d:"Restful sleep is a gift of trust. When stress keeps us awake, placing what we cannot resolve into God's overnight care is an act of faith.",p:"Lord, I trust You with what I cannot solve. Give me peaceful rest.",ps:"Señor, confío en Ti con lo que no puedo resolver. Dame descanso en paz."},
+{r:"James 1:5",e:"If any of you lacks wisdom, you should ask God, who gives generously to all without finding fault, and it will be given to you.",s:"Si a alguno de ustedes le falta sabiduría, pídasela a Dios, y él se la dará, pues Dios da a todos generosamente sin menospreciar a nadie.",d:"Much stress is caused by not knowing what to do. James offers a direct solution — ask the all-knowing God, who gives wisdom without reproach.",p:"God, I need Your wisdom right now. I ask and trust You to provide it.",ps:"Dios, necesito Tu sabiduría ahora mismo. Pido y confío en que la proveas."},
+{r:"Lamentations 3:26",e:"It is good to wait quietly for the salvation of the Lord.",s:"Bueno es esperar con silencio la salvación del SEÑOR.",d:"Quiet waiting is a counter-cultural discipline. In stress, we rush toward solutions. But God calls us to stillness before Him as a form of faith.",p:"Lord, teach me to wait quietly for You instead of rushing ahead.",ps:"Señor, enséñame a esperar quietamente en Ti en lugar de apresurarme."},
+{r:"John 16:33",e:"In this world you will have trouble. But take heart! I have overcome the world.",s:"En este mundo afrontarán aflicciones, pero anímense. Yo he vencido al mundo.",d:"Jesus validates the reality of stress — He does not pretend it away. But He immediately reframes it: the world's troubles meet a Savior who has already defeated them.",p:"Jesus, You have overcome this world. Help me take heart in Your victory.",ps:"Jesús, has vencido a este mundo. Ayúdame a animarme en Tu victoria."},
+{r:"2 Corinthians 4:8-9",e:"We are hard pressed on every side, but not crushed; perplexed, but not in despair; persecuted, but not abandoned; struck down, but not destroyed.",s:"Nos vemos atribulados en todo, pero no abatidos; perplejos, pero no desesperados; perseguidos, pero no abandonados; derribados, pero no destruidos.",d:"No pressure is final. The resilience of the believer under stress is supernatural sustaining, not natural toughness. God holds us up.",p:"Lord, I am pressed but not crushed. Sustain me by Your power.",ps:"Señor, estoy presionado pero no aplastado. Sostenme por Tu poder."},
+],
+// ── LONELINESS ──
+loneliness:[
+{r:"Deuteronomy 31:8",e:"The Lord himself goes before you and will be with you; he will never leave you nor forsake you. Do not be afraid; do not be discouraged.",s:"El SEÑOR mismo marchará al frente de ti y estará contigo; nunca te dejará ni te abandonará. No temas ni te desanimes.",d:"God is already there before us, and He walks with us. Loneliness is the lie that we are facing something He has not prepared.",p:"Lord, remind me that You go before me. I am never truly alone.",ps:"Señor, recuérdame que Tú vas delante de mí. Nunca estoy verdaderamente solo."},
+{r:"Psalm 68:6",e:"God sets the lonely in families, he leads out the prisoners with singing.",s:"Dios da un hogar a los desamparados y libertad a los cautivos.",d:"God actively places the isolated into belonging. His response to loneliness is not abstract comfort but concrete community.",p:"Father, set me in community. Bring the connection I need.",ps:"Padre, ponme en comunidad. Trae la conexión que necesito."},
+{r:"John 14:18",e:"I will not leave you as orphans; I will come to you.",s:"No los voy a dejar huérfanos; volveré a ustedes.",d:"The word orphan captures the deepest loneliness. Jesus directly addresses this fear with a personal promise: I am coming to you.",p:"Jesus, come to me in this lonely moment. I need Your presence.",ps:"Jesús, ven a mí en este momento solitario. Necesito Tu presencia."},
+{r:"Hebrews 13:5",e:"Never will I leave you; never will I forsake you.",s:"Nunca te dejaré; jamás te abandonaré.",d:"This double negation in the Greek is emphatic: it is categorically impossible for God to abandon those who are His.",p:"Lord, Your promise is absolute. You will never leave me. I believe this.",ps:"Señor, Tu promesa es absoluta. Nunca me dejarás. Creo esto."},
+{r:"Matthew 28:20",e:"And surely I am with you always, to the very end of the age.",s:"Les aseguro que estaré con ustedes siempre, hasta el fin del mundo.",d:"Not just now — always. Not just in good seasons — to the very end. Loneliness cannot hold where these words are believed.",p:"Jesus, You are with me always. Let me feel that today.",ps:"Jesús, estás conmigo siempre. Déjame sentir eso hoy."},
+{r:"Isaiah 43:4",e:"Since you are precious and honored in my sight, and because I love you.",s:"A mis ojos eres precioso y digno de honra, y porque te amo.",d:"Loneliness says no one notices — God says you are treasured. Being seen as precious by the Creator is the antidote to loneliness at its root.",p:"Lord, help me feel how precious I am to You right now.",ps:"Señor, ayúdame a sentir cuán precioso soy para Ti ahora mismo."},
+{r:"Psalm 139:7-10",e:"Where can I go from your Spirit? If I go up to the heavens, you are there; if I make my bed in the depths, you are there.",s:"A dónde podría alejarme de tu Espíritu? Si subiera al cielo, allí estás tú; si tendiera mi lecho en el fondo del abismo, también estás allí.",d:"There is no place you can go where God has not already arrived. His presence dismantles every lonely geography.",p:"God, Your presence fills every place I go. I am never alone.",ps:"Dios, Tu presencia llena cada lugar donde voy. Nunca estoy solo."},
+{r:"Genesis 2:18",e:"The Lord God said, It is not good for the man to be alone. I will make a helper suitable for him.",s:"Luego Dios el SEÑOR dijo: No es bueno que el hombre esté solo. Voy a hacerle una ayuda adecuada.",d:"God Himself declared human loneliness as a problem requiring His divine solution. Your loneliness is not weakness — it points you back to God and to His community.",p:"Lord, You created me for connection. Meet that need in Your way.",ps:"Señor, me creaste para la conexión. Satisface esa necesidad a Tu manera."},
+{r:"Psalm 23:4",e:"Even though I walk through the darkest valley, I will fear no evil, for you are with me; your rod and your staff, they comfort me.",s:"Aun si voy por valles tenebrosos, no temo peligro alguno porque tú estás a mi lado; tu vara de pastor me reconforta.",d:"Loneliness is intensified in the dark valleys of life. But even there, especially there, God walks alongside. The rod and staff prove His attentive presence.",p:"Shepherd, walk with me through this dark valley. I trust Your presence.",ps:"Pastor, camina conmigo por este valle oscuro. Confío en Tu presencia."},
+{r:"Isaiah 54:10",e:"Though the mountains be shaken and the hills be removed, yet my unfailing love for you will not be shaken, says the Lord.",s:"Aunque las montañas sean sacudidas y los cerros sean removidos, mi amor inagotable por ti no será sacudido, dice el SEÑOR.",d:"Everything in creation can be destabilized — but God's covenant love cannot. Loneliness often feels like the final word; God's love always has the last word.",p:"Lord, Your love for me cannot be shaken. I rest in that today.",ps:"Señor, Tu amor por mí no puede ser sacudido. Descanso en eso hoy."},
+{r:"Romans 8:38-39",e:"Neither death nor life, nor anything else in all creation, will be able to separate us from the love of God.",s:"Ni cosa alguna en toda la creación podrá apartarnos del amor que Dios nos ha manifestado en Cristo Jesús nuestro Señor.",d:"The isolation of loneliness is a feeling — but it is not the final reality. Nothing can sever the connection God has established in Christ.",p:"Nothing separates me from Your love. That is my anchor in loneliness.",ps:"Nada me separa de Tu amor. Ese es mi ancla en la soledad."},
+{r:"Acts 2:44-45",e:"All the believers were together and had everything in common. They sold property and possessions to give to anyone who had need.",s:"Todos los creyentes estaban juntos y tenían todo en común. Vendían sus propiedades y compartían el dinero según la necesidad de cada uno.",d:"The early church modeled the answer to loneliness: intentional, sacrificial community. Belonging is built by people committed to one another in Christ.",p:"Lord, lead me to Your community where I can truly belong.",ps:"Señor, llévame a Tu comunidad donde pueda verdaderamente pertenecer."},
+{r:"1 Kings 19:4-5",e:"He came to a broom bush, sat down under it and prayed that he might die. I have had enough, Lord. But as he lay there, an angel touched him.",s:"Llegó a un arbusto y se sentó a su sombra. Con ganas de morirse, dijo: Estoy harto, SEÑOR. Luego se acostó y un ángel lo tocó.",d:"God's response to Elijah's loneliness was not rebuke but nourishment. He meets us in our most depleted moments with care, not criticism.",p:"Lord, meet me in my exhaustion as You met Elijah. Nourish me.",ps:"Señor, encuéntrame en mi agotamiento como encontraste a Elías. Aliméntame."},
+{r:"Psalm 25:16",e:"Turn to me and be gracious to me, for I am lonely and afflicted.",s:"Vuélvete a mí y ten compasión, pues me encuentro solo y afligido.",d:"The psalmist brings his loneliness directly to God in prayer — not as shame but as a legitimate petition. God does not despise honest loneliness.",p:"Lord, turn to me in my loneliness. I am not ashamed to say I need You.",ps:"Señor, vuélvete a mí en mi soledad. No me avergüenza decirte que te necesito."},
+{r:"John 16:32",e:"You will leave me all alone. Yet I am not alone, for my Father is with me.",s:"Me dejarán solo. Sin embargo, yo no estoy solo, porque el Padre está conmigo.",d:"Jesus experienced abandonment from those He loved — and overcame it through His relationship with the Father. Our deepest companionship is always available.",p:"Father, be to me what You were to Jesus — my constant companion.",ps:"Padre, sé para mí lo que fuiste para Jesús: mi compañero constante."},
+{r:"Matthew 18:20",e:"For where two or three gather in my name, there am I with them.",s:"Porque donde dos o tres se reúnen en mi nombre, allí estoy yo en medio de ellos.",d:"When loneliness tempts us toward isolation, seeking even one other believer invites Jesus into the middle of the relationship.",p:"Jesus, I seek Your presence in community. Draw me to others who love You.",ps:"Jesús, busco Tu presencia en comunidad. Atráeme a otros que Te aman."},
+{r:"Galatians 6:2",e:"Carry each other's burdens, and in this way you will fulfill the law of Christ.",s:"Ayúdense unos a otros a llevar sus cargas, y así cumplirán la ley de Cristo.",d:"Vulnerability in community is not weakness — it is the fulfillment of Christ's law of love. God's design for loneliness includes allowing others to share what you carry.",p:"Lord, give me courage to let others carry this burden with me.",ps:"Señor, dame valor para dejar que otros lleven esta carga conmigo."},
+{r:"Zephaniah 3:17",e:"The Lord your God is with you, the Mighty Warrior who saves. He will take great delight in you; in his love he will rejoice over you with singing.",s:"El SEÑOR tu Dios está en medio de ti como guerrero victorioso. Se deleitará en ti con gozo, se alegrará por ti con cantos.",d:"God does not merely tolerate you — He sings over you with joy. You are the object of His gladness. Loneliness is answered by delight.",p:"God, You sing over me with joy. Let me feel Your delight in me.",ps:"Dios, cantas sobre mí con gozo. Déjame sentir Tu deleite en mí."},
+{r:"Revelation 3:20",e:"Here I am! I stand at the door and knock. If anyone hears my voice and opens the door, I will come in and eat with that person, and they with me.",s:"Mira, yo estoy a la puerta y llamo. Si alguno oye mi voz y abre la puerta, entraré, y cenaré con él, y él conmigo.",d:"Jesus knocks, waits, and when welcomed, stays for a meal. Intimacy with Him begins with the simplest invitation: come in.",p:"Jesus, I open the door of my heart to You right now. Come in.",ps:"Jesús, abro la puerta de mi corazón para Ti ahora mismo. Entra."},
+{r:"Psalm 102:7",e:"I lie awake; I have become like a bird alone on a rooftop.",s:"Me desvelo y gimo como un pájaro solitario sobre el tejado.",d:"God does not edit out the honest cry of isolation — He inscribes it in His Word so the lonely can find themselves truly seen.",p:"Lord, You see me in my loneliness. I am not too broken to bring this to You.",ps:"Señor, me ves en mi soledad. No estoy demasiado roto para traerte esto."},
+],
+// ── LOVE ──
+love:[
+{r:"John 3:16",e:"For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.",s:"Porque tanto amó Dios al mundo que dio a su Hijo unigénito, para que todo el que cree en él no se pierda, sino que tenga vida eterna.",d:"The motive is love, the method is giving, the outcome is eternal life. This is the whole gospel in one verse.",p:"Thank You, Father, for loving me enough to give Your only Son.",ps:"Gracias, Padre, por amarme lo suficiente como para dar a Tu único Hijo."},
+{r:"Romans 5:8",e:"But God demonstrates his own love for us in this: While we were still sinners, Christ died for us.",s:"Pero Dios demuestra su amor por nosotros en esto: en que cuando todavía éramos pecadores, Cristo murió por nosotros.",d:"God did not wait for us to become worthy before loving us. His love is proactive, preemptive, and unconditional.",p:"Jesus, thank You for loving me before I deserved it.",ps:"Jesús, gracias por amarme antes de que lo mereciera."},
+{r:"1 John 4:8",e:"Whoever does not love does not know God, because God is love.",s:"El que no ama no conoce a Dios, porque Dios es amor.",d:"Not merely that God loves — God is the very essence and source of love itself. To know God is to be touched by love at its purest origin.",p:"Lord, let Your love — not just what You do but who You are — fill me.",ps:"Señor, que Tu amor — no solo lo que haces sino quien eres — me llene."},
+{r:"1 Corinthians 13:4-7",e:"Love is patient, love is kind. It does not envy, it does not boast, it is not proud. It does not dishonor others, it is not self-seeking, it is not easily angered, it keeps no record of wrongs.",s:"El amor es paciente, es bondadoso. El amor no es envidioso ni jactancioso ni orgulloso. No se comporta con rudeza, no es egoísta, no se enoja fácilmente, no guarda rencor.",d:"True love is not a feeling to be received but a decision to be practiced — shaped entirely by the needs of others.",p:"Lord, teach me to love with patience and kindness, not self-seeking.",ps:"Señor, enséñame a amar con paciencia y bondad, no buscando lo mío."},
+{r:"John 15:13",e:"Greater love has no one than this: to lay down one's life for one's friends.",s:"Nadie tiene amor más grande que el dar la vida por sus amigos.",d:"The cross is the highest measurement of love ever demonstrated — and it was given freely for us. Jesus did not merely define love; He embodied it.",p:"Jesus, Your life laid down for me is the greatest love. I am overwhelmed.",ps:"Jesús, Tu vida entregada por mí es el amor más grande. Estoy abrumado."},
+{r:"Romans 8:37-39",e:"In all these things we are more than conquerors through him who loved us. Nothing will be able to separate us from the love of God.",s:"En todo esto somos más que vencedores por medio de aquel que nos amó. Nada podrá apartarnos del amor que Dios nos ha manifestado en Cristo Jesús.",d:"The permanence of God's love is what makes us conquerors — not our own strength but the unbreakable bond of divine love.",p:"Lord, Your love makes me more than a conqueror. Nothing can separate us.",ps:"Señor, Tu amor me hace más que vencedor. Nada puede separarnos."},
+{r:"1 John 4:19",e:"We love because he first loved us.",s:"Nosotros amamos porque él nos amó primero.",d:"We do not generate love on our own — we reflect back what has been poured into us. More of God's love means more love to give.",p:"Father, let Your love pour so deeply into me that it overflows to others.",ps:"Padre, que Tu amor fluya tan profundamente en mí que desborde hacia otros."},
+{r:"Zephaniah 3:17",e:"The Lord your God is with you, the Mighty Warrior who saves. He will take great delight in you; in his love he will rejoice over you with singing.",s:"El SEÑOR tu Dios está en medio de ti como guerrero victorioso. Se deleitará en ti con gozo, se alegrará por ti con cantos.",d:"God's love is not passive — it sings. This image of a joyful God singing over His beloved is one of the most tender pictures of love in all Scripture.",p:"God, You sing over me with love. Let me rest in that sound today.",ps:"Dios, cantas sobre mí con amor. Déjame descansar en ese sonido hoy."},
+{r:"Song of Solomon 8:6",e:"Place me like a seal over your heart; for love is as strong as death, its jealousy unyielding as the grave.",s:"Grábame como un sello sobre tu corazón. Fuerte es el amor, como la muerte, y tenaz la pasión, como el sepulcro.",d:"Love in Scripture is not soft or sentimental — it is fierce, tenacious, and unquenchable. God's love has this same relentless quality.",p:"Lord, let me know the fierce, unquenchable love You have for me.",ps:"Señor, déjame conocer el amor feroz e inextinguible que tienes por mí."},
+{r:"John 13:34-35",e:"A new command I give you: Love one another. As I have loved you, so you must love one another. By this everyone will know that you are my disciples.",s:"Este mandamiento nuevo les doy: que se amen los unos a los otros. De este modo todos sabrán que son mis discípulos.",d:"Love among believers is the primary witness to a watching world that Jesus is real.",p:"Lord, let my love for others be the clearest sign that I am Yours.",ps:"Señor, que mi amor por otros sea la señal más clara de que soy Tuyo."},
+{r:"Ephesians 3:17-19",e:"And I pray that you may have power to grasp how wide and long and high and deep is the love of Christ.",s:"Y pido que puedan comprender cuán ancho y largo, alto y profundo es el amor de Cristo.",d:"God's love is too large for a single lifetime of exploration. Paul prays for supernatural capacity to comprehend a love that transcends comprehension.",p:"God, root me in love so deep I spend my whole life discovering it.",ps:"Dios, enráizame en amor tan profundo que pase toda mi vida descubriéndolo."},
+{r:"Psalm 136:1",e:"Give thanks to the Lord, for he is good. His love endures forever.",s:"Den gracias al SEÑOR, porque él es bueno; su gran amor perdura para siempre.",d:"The refrain that echoes through all 26 verses of this psalm is the heartbeat of God's character. No matter what changes, His love remains.",p:"Lord, Your love endures forever. I give You thanks for that right now.",ps:"Señor, Tu amor perdura para siempre. Te doy gracias por eso ahora mismo."},
+{r:"Hosea 2:19-20",e:"I will betroth you to me forever; I will betroth you in righteousness and justice, in love and compassion.",s:"Y te desposaré conmigo para siempre; te desposaré en rectitud y justicia, en amor y compasión.",d:"God uses the language of covenant marriage to describe His love — permanent, faithful, binding. Not a feeling that comes and goes.",p:"Lord, You have committed to me forever. Let me live in that security.",ps:"Señor, Te has comprometido conmigo para siempre. Déjame vivir en esa seguridad."},
+{r:"1 John 3:1",e:"See what great love the Father has lavished on us, that we should be called children of God! And that is what we are!",s:"Fíjense qué gran amor nos ha dado el Padre, que se nos llame hijos de Dios. ¡Y lo somos!",d:"The word lavished suggests excess, abundance, generosity beyond necessity. God does not love us minimally — He pours out love with reckless generosity.",p:"Father, I receive the lavish love You pour on me as Your child.",ps:"Padre, recibo el amor abundante que derramas sobre mí como Tu hijo."},
+{r:"Luke 15:20",e:"But while he was still a long way off, his father saw him and was filled with compassion; he ran to his son and embraced him.",s:"Todavía estaba lejos cuando su padre lo vio y se compadeció de él; salió corriendo a su encuentro, lo abrazó y lo besó.",d:"Love that runs toward the returning child — this is God's love. It does not wait for a full apology; it runs, embraces, and restores.",p:"Father, run to me today. I am coming back to You.",ps:"Padre, corre hacia mí hoy. Estoy volviendo a Ti."},
+{r:"Galatians 5:22",e:"But the fruit of the Spirit is love, joy, peace, forbearance, kindness, goodness, faithfulness.",s:"En cambio, el fruto del Espíritu es amor, alegría, paz, paciencia, amabilidad, bondad, fidelidad.",d:"Love heads the list of spiritual fruit — it is the primary evidence of a life surrendered to God. When the Spirit fills us, the first thing produced is love.",p:"Holy Spirit, fill me so that love is the first fruit others see in me.",ps:"Espíritu Santo, lléneme para que el amor sea el primer fruto que otros vean en mí."},
+{r:"Deuteronomy 7:9",e:"Know therefore that the Lord your God is God; he is the faithful God, keeping his covenant of love to a thousand generations.",s:"Reconoce que el SEÑOR tu Dios es el Dios verdadero, el Dios fiel, que cumple su pacto generación tras generación.",d:"God's love is not only for you personally — it is for your children and their children, spanning a thousand generations.",p:"Lord, let Your covenant love flow through my life to generations after me.",ps:"Señor, que Tu amor del pacto fluya a través de mi vida a las generaciones después de mí."},
+{r:"Isaiah 49:15-16",e:"Can a mother forget the baby at her breast? Though she may forget, I will not forget you! See, I have engraved you on the palms of my hands.",s:"Puede una madre olvidar a su niño de pecho? Aunque ella lo olvidara, yo no te olvidaré. Grabada te llevo en las palmas de mis manos.",d:"God's love surpasses even the most powerful human love. We are not merely remembered — we are permanently inscribed on His hands.",p:"Lord, I am engraved on Your hands. Help me feel how deeply You love me.",ps:"Señor, estoy grabado en Tus manos. Ayúdame a sentir cuánto me amas."},
+{r:"Mark 12:30-31",e:"Love the Lord your God with all your heart and with all your soul and with all your mind and with all your strength. Love your neighbor as yourself.",s:"Ama al Señor tu Dios con todo tu corazón, con toda tu alma, con toda tu mente y con todas tus fuerzas. Ama a tu prójimo como a ti mismo.",d:"The greatest commandment is the full-life response to a love already freely given. Loving God and others is the shape of a transformed life.",p:"Lord, let my whole life be a response of love to You and others.",ps:"Señor, que toda mi vida sea una respuesta de amor hacia Ti y hacia otros."},
+{r:"Romans 13:10",e:"Love does no harm to a neighbor. Therefore love is the fulfillment of the law.",s:"El amor no perjudica al prójimo. Así que el amor es el cumplimiento de la ley.",d:"Where love is genuinely present, the whole moral life is simplified. The law's requirement is summarized in one word: love.",p:"God, let love be so real in me that it fulfills everything the law requires.",ps:"Dios, que el amor sea tan real en mí que cumpla todo lo que la ley requiere."},
+],
+// ── ANGER ──
+anger:[
+{r:"Ephesians 4:26",e:"In your anger do not sin: Do not let the sun go down while you are still angry.",s:"Si se enojan, no pequen. No permitan que el enojo les dure hasta la puesta del sol.",d:"Anger itself is not condemned — it is the response to anger that determines its righteousness. God gives a time boundary: deal with it before the day ends.",p:"Lord, help me process this anger before it becomes sin.",ps:"Señor, ayúdame a procesar esta ira antes de que se convierta en pecado."},
+{r:"James 1:19-20",e:"Everyone should be quick to listen, slow to speak and slow to become angry, because human anger does not produce the righteousness that God desires.",s:"Todos deben estar listos para escuchar, y ser lentos para hablar y para enojarse; pues la ira humana no produce la vida justa que Dios quiere.",d:"Listen first, speak second, grow angry last — a practical pathway through provocation toward righteousness.",p:"Lord, make me quick to listen, slow to speak, and slow to anger.",ps:"Señor, hazme rápido para escuchar, lento para hablar y lento para enojarme."},
+{r:"Proverbs 15:1",e:"A gentle answer turns away wrath, but a harsh word stirs up anger.",s:"La respuesta amable calma el enojo, pero la agresiva echa leña al fuego.",d:"A soft answer does not concede truth — it removes heat so that truth can actually be heard. The path out of conflict begins with the tone we choose.",p:"Lord, put gentle words in my mouth when anger rises in me.",ps:"Señor, pon palabras gentiles en mi boca cuando surge la ira en mí."},
+{r:"Romans 12:19",e:"Do not take revenge, my dear friends, but leave room for God's wrath, for it is written: It is mine to avenge; I will repay, says the Lord.",s:"No tomen venganza, hermanos míos, sino dejen el castigo en las manos de Dios. Mía es la venganza; yo pagaré, dice el Señor.",d:"Releasing the need to retaliate is not weakness — it is trust that God is the perfect and righteous judge of all things.",p:"Lord, I release justice to You. I trust You to handle what I cannot.",ps:"Señor, Te entrego la justicia. Confío en Ti para manejar lo que no puedo."},
+{r:"Psalm 37:8",e:"Refrain from anger and turn from wrath; do not fret — it leads only to evil.",s:"Refrena el enojo, abandona la ira; no te irrites, pues esto conduce al mal.",d:"Anger held too long transforms into something more destructive. The psalmist urges not just restraint but turning away — a deliberate change of direction.",p:"Father, help me turn away from this anger before it leads somewhere I regret.",ps:"Padre, ayúdame a apartarme de esta ira antes de que me lleve a algo que lamente."},
+{r:"Proverbs 29:11",e:"Fools give full vent to their rage, but the wise bring calm in the end.",s:"El necio da rienda suelta a su ira, pero el sabio sabe dominarla.",d:"Wisdom channels anger toward peace rather than destruction. The wise person brings calm — not by feeling less but by choosing better.",p:"Lord, give me wisdom to bring calm rather than fuel to this conflict.",ps:"Señor, dame sabiduría para traer calma en lugar de combustible a este conflicto."},
+{r:"Matthew 5:22",e:"But I tell you that anyone who is angry with a brother or sister will be subject to judgment.",s:"Pero yo les digo que todo el que se enoje con su hermano quedará sujeto al juicio del tribunal.",d:"Jesus raises the standard beyond the act to the attitude of unchecked anger. Unrighteous anger is a relational and spiritual issue requiring reconciliation.",p:"Lord, convict me of anger I have held too long. Help me seek peace.",ps:"Señor, convénceme de la ira que he guardado demasiado tiempo. Ayúdame a buscar la paz."},
+{r:"Nehemiah 5:6-7",e:"When I heard their outcry and these charges, I was very angry. I pondered them in my mind and then accused the nobles and officials.",s:"Al escuchar sus quejas me enojé mucho. Después de reflexionar, reprendí a los nobles y a los gobernantes.",d:"Righteous anger serves justice — but it must be disciplined by reflection before action. Nehemiah pondered deeply before he spoke.",p:"Lord, teach me to pause and think before acting on my anger.",ps:"Señor, enséñame a pausar y pensar antes de actuar sobre mi ira."},
+{r:"Proverbs 16:32",e:"Better a patient person than a warrior, one with self-control than one who takes a city.",s:"Más vale ser paciente que valiente; más vale dominarse a sí mismo que conquistar ciudades.",d:"The greatest battle we face is the one within. Victory over self is worth more than any external achievement.",p:"God, build patience and self-control in me. That is the greatest strength.",ps:"Dios, construye paciencia y dominio propio en mí. Esa es la mayor fortaleza."},
+{r:"Ecclesiastes 7:9",e:"Do not be quickly provoked in your spirit, for anger resides in the lap of fools.",s:"No te dejes llevar por el enojo, pues éste anida en el pecho de los necios.",d:"Quick provocation is a sign of unchecked emotion ruling the soul. Wisdom develops a longer fuse — not because it cares less, but because it thinks more clearly.",p:"Lord, lengthen my fuse. Guard my spirit against quick provocation.",ps:"Señor, alarga mi paciencia. Guarda mi espíritu contra la provocación rápida."},
+{r:"Colossians 3:8",e:"But now you must also rid yourselves of all such things as these: anger, rage, malice, slander.",s:"Pero ahora abandonen también todo esto: enojo, ira, malicia, calumnia.",d:"Like old clothes that no longer fit who we are in Christ, patterns of anger must be taken off intentionally and replaced with God's character.",p:"God, help me take off anger and put on the character of Christ.",ps:"Dios, ayúdame a quitarme la ira y ponerme el carácter de Cristo."},
+{r:"Matthew 21:12-13",e:"Jesus entered the temple courts and drove out all who were buying and selling there. He overturned the tables of the money changers.",s:"Jesús entró en el templo y echó a todos los que compraban y vendían. Volcó las mesas de los que cambiaban dinero.",d:"Righteous anger has a proper place — when the honor of God is at stake. But even Jesus' anger was targeted and purposeful, not explosive and personal.",p:"Lord, let my anger be righteous — targeting injustice, not people.",ps:"Señor, que mi ira sea justa — dirigida a la injusticia, no a las personas."},
+{r:"Lamentations 3:22-23",e:"Because of the Lord's great love we are not consumed, for his compassions never fail. They are new every morning; great is your faithfulness.",s:"El gran amor del SEÑOR nunca se acaba, y su compasión jamás se agota. Cada mañana se renuevan sus bondades; muy grande es su fidelidad.",d:"Even in seasons of anger, His mercies are new every morning. Wrath does not have the final word; mercy does.",p:"Lord, Your mercies are new today. Renew my heart and release my anger.",ps:"Señor, Tus misericordias son nuevas hoy. Renueva mi corazón y libera mi ira."},
+{r:"Proverbs 14:29",e:"Whoever is patient has great understanding, but one who is quick-tempered displays folly.",s:"El que es paciente muestra gran discernimiento; el que es agresivo muestra mucha insensatez.",d:"Patience is linked to understanding. The patient person takes time to comprehend before reacting. Quick temper produces outcomes we later regret.",p:"Lord, give me patience that leads to understanding instead of regret.",ps:"Señor, dame paciencia que lleve al entendimiento en lugar del arrepentimiento."},
+{r:"Psalm 103:8",e:"The Lord is compassionate and gracious, slow to anger, abounding in love.",s:"El SEÑOR es clemente y compasivo, lento para la ira y grande en amor.",d:"God's character is the model for our own. He is slow to anger — not reactive, and responds from love rather than impulse.",p:"Lord, make me like You — slow to anger and abounding in love.",ps:"Señor, hazme como Tú — lento para la ira y abundante en amor."},
+{r:"Mark 3:5",e:"He looked around at them in anger and, deeply distressed at their stubborn hearts, said to the man, Stretch out your hand.",s:"Los miró con enojo, entristecido por la dureza de su corazón, y le dijo al hombre: Extiende la mano.",d:"His anger was accompanied by grief — not contempt. Righteous anger grieves what has gone wrong rather than condemning who has gone wrong.",p:"Lord, let my anger always be mixed with grief for what has broken, not contempt.",ps:"Señor, que mi ira siempre esté mezclada con dolor por lo que se ha roto, no con desprecio."},
+{r:"Numbers 20:11",e:"Then Moses raised his arm and struck the rock twice with his staff. Water gushed out.",s:"Luego Moisés levantó la mano y golpeó la roca dos veces con su bastón. El agua brotó a chorros.",d:"Moses struck the rock in anger rather than speaking to it as God commanded. Uncontrolled anger can cost us what God intended for us.",p:"Lord, guard me from letting anger cost me what You have prepared for me.",ps:"Señor, guárdame de dejar que la ira me cueste lo que has preparado para mí."},
+{r:"Jonah 4:4",e:"But the Lord replied, Is it right for you to be angry?",s:"Pero el SEÑOR le replicó: ¿Tienes razón en enojarte así?",d:"This question is the mirror God holds up to misdirected anger. Is this anger righteous, or is it rooted in pride and self-will?",p:"Lord, ask me that same question. Is it right for me to be angry?",ps:"Señor, hazme la misma pregunta. ¿Tengo razón en enojarme así?"},
+{r:"Proverbs 19:11",e:"A person's wisdom yields patience; it is to one's glory to overlook an offense.",s:"El buen juicio hace al hombre paciente; su gloria es pasar por alto la ofensa.",d:"The ability to let something go — to refuse to be baited into anger — is not weakness but glory. It reflects the character of God.",p:"Lord, give me the grace to overlook offenses and choose peace.",ps:"Señor, dame la gracia de pasar por alto las ofensas y elegir la paz."},
+{r:"Galatians 5:20",e:"The acts of the flesh include hatred, discord, jealousy, fits of rage.",s:"Las obras de la naturaleza pecaminosa incluyen odio, discordia, celos, arrebatos de ira.",d:"Unrighteous anger is a work of the flesh — to be crucified with Christ and replaced by the Spirit's fruit of patience and gentleness.",p:"Lord, crucify the fits of rage in me. Fill me with the Spirit's peace.",ps:"Señor, crucifica los arrebatos de ira en mí. Lléneme con la paz del Espíritu."},
+],
+// ── HEALTH ──
+health:[
+{r:"3 John 1:2",e:"Dear friend, I pray that you may enjoy good health and that all may go well with you, even as your soul is getting along well.",s:"Querido hermano, oro para que te vaya bien en todos tus asuntos y goces de buena salud, así como prosperas espiritualmente.",d:"The earliest church leaders prayed for physical health alongside spiritual flourishing. God cares about the whole person — body and soul.",p:"Lord, I receive Your desire for my full health — body, mind, and spirit.",ps:"Señor, recibo Tu deseo de mi plena salud — cuerpo, mente y espíritu."},
+{r:"1 Corinthians 6:19-20",e:"Do you not know that your bodies are temples of the Holy Spirit? You were bought at a price. Therefore honor God with your bodies.",s:"No saben que su cuerpo es templo del Espíritu Santo? Fueron comprados por un precio. Por tanto, honren con su cuerpo a Dios.",d:"The physical body is not separate from spiritual life — it is the dwelling place of the Spirit. How we care for our bodies is an act of worship.",p:"Lord, help me honor You with the body You gave me as Your temple.",ps:"Señor, ayúdame a honrarte con el cuerpo que me diste como Tu templo."},
+{r:"Psalm 139:14",e:"I praise you because I am fearfully and wonderfully made; your works are wonderful, I know that full well.",s:"Te alabo porque soy una creación admirable. Tus obras son maravillosas, y esto lo sé muy bien.",d:"The body we inhabit is the craftsmanship of God. Caring for our health begins with believing we are worth caring for because He made us.",p:"Lord, I receive that I am fearfully and wonderfully made by You.",ps:"Señor, recibo que fui hecho de manera admirable y maravillosa por Ti."},
+{r:"Proverbs 17:22",e:"A cheerful heart is good medicine, but a crushed spirit dries up the bones.",s:"Gran remedio es el corazón alegre, pero el ánimo decaído seca los huesos.",d:"Joy is not just a feeling — Scripture treats it as medicine. Choosing joy in God is a health practice with real physical impact.",p:"God, fill me with Your joy as medicine for my body and soul.",ps:"Dios, lléneme con Tu gozo como medicina para mi cuerpo y alma."},
+{r:"Romans 12:1",e:"I urge you to offer your bodies as a living sacrifice, holy and pleasing to God — this is your true and proper worship.",s:"Les ruego que ofrezcan su cuerpo como sacrificio vivo, santo y agradable a Dios — esta es su adoración espiritual.",d:"Caring for our health is not vanity — it is an act of consecration. The body offered to God becomes an instrument of worship.",p:"Lord, I offer my body to You today as a living act of worship.",ps:"Señor, Te ofrezco mi cuerpo hoy como un acto vivo de adoración."},
+{r:"Exodus 15:26",e:"I am the Lord, who heals you.",s:"Yo soy el SEÑOR, que te sana.",d:"Jehovah Rapha — the God who heals. Healing is part of His identity, not just an occasional act. He heals because healing is who He is.",p:"Jehovah Rapha, You are my healer. I trust Your name over my health.",ps:"Jehová Rapha, Eres mi sanador. Confío en Tu nombre sobre mi salud."},
+{r:"Isaiah 40:29",e:"He gives strength to the weary and increases the power of the weak.",s:"Él fortalece al cansado y acrecienta las fuerzas del débil.",d:"When our bodies are depleted, the invitation is to draw on supernatural reserves that never run dry. God is the source of all real strength.",p:"Lord, give me strength where I am weak. Be my energy today.",ps:"Señor, dame fuerza donde soy débil. Sé mi energía hoy."},
+{r:"Genesis 1:29",e:"Then God said, I give you every seed-bearing plant on the face of the whole earth and every tree that has fruit with seed in it.",s:"Dios dijo: Yo les doy todas las plantas que producen semilla y todos los árboles que dan fruto con semilla. Todo esto les servirá de alimento.",d:"From the very beginning, God provided nourishment through creation. Good health is connected to gratitude for what God has given.",p:"Lord, help me steward the body and nourishment You have given me.",ps:"Señor, ayúdame a administrar el cuerpo y el alimento que me has dado."},
+{r:"Psalm 103:3",e:"Who forgives all your sins and heals all your diseases.",s:"Él perdona todos tus pecados y sana todas tus enfermedades.",d:"God attends to both spiritual disease and physical disease — they are not separated in His mind. Forgiveness and healing come from the same source.",p:"Lord, I receive both Your forgiveness and Your healing today.",ps:"Señor, recibo tanto Tu perdón como Tu sanación hoy."},
+{r:"Matthew 9:35",e:"Jesus went through all the towns and villages, healing every disease and sickness.",s:"Jesús recorría todos los pueblos y aldeas, sanando toda enfermedad y toda dolencia.",d:"The healing ministry of Jesus was not selective — it was comprehensive. Every kind of sickness encountered Him and left changed. He is the same today.",p:"Jesus, You healed every kind of sickness. I bring mine to You now.",ps:"Jesús, sanaste todo tipo de enfermedad. Te traigo la mía ahora."},
+{r:"Proverbs 3:7-8",e:"Do not be wise in your own eyes; fear the Lord and shun evil. This will bring health to your body and nourishment to your bones.",s:"No seas sabio en tu propia opinión; teme al SEÑOR y huye del mal. Esto traerá salud a tu cuerpo y fortalecerá tu ser interior.",d:"Spiritual alignment with God produces physical benefit. Reverence for God is woven into the foundation of bodily health.",p:"Lord, I choose to fear You and shun evil. Let that bring health to my body.",ps:"Señor, elijo temerte y huir del mal. Que eso traiga salud a mi cuerpo."},
+{r:"1 Timothy 4:8",e:"For physical training is of some value, but godliness has value for all things, holding promise for both the present life and the life to come.",s:"El ejercicio físico trae algún provecho, la piedad es útil para todo, ya que incluye una promesa no sólo para la vida presente sino también para la venidera.",d:"Caring for the body matters — but spiritual health is the foundation that makes all other health meaningful and lasting.",p:"Lord, help me invest in godliness as much as in my physical health.",ps:"Señor, ayúdame a invertir en la piedad tanto como en mi salud física."},
+{r:"Psalm 41:3",e:"The Lord sustains them on their sickbed and restores them from their bed of illness.",s:"El SEÑOR los protegerá y los mantendrá con vida cuando estén enfermos; en su lecho de dolor los restaurará.",d:"God ministers to the sick in their most vulnerable moments. He does not stand at a distance from illness — He comes close and sustains even there.",p:"Lord, sustain me on this sickbed. Come close and restore me.",ps:"Señor, sostenme en esta cama de enfermedad. Acércate y restáurame."},
+{r:"Jeremiah 30:17",e:"But I will restore you to health and heal your wounds, declares the Lord.",s:"Pero yo te restauraré y sanaré tus heridas, afirma el SEÑOR.",d:"God's intent for His people is not permanent illness but restoration. This declaration is a promise we can stand on in any health crisis.",p:"Lord, I stand on Your word: You will restore my health and heal my wounds.",ps:"Señor, me apoyo en Tu palabra: restaurarás mi salud y sanarás mis heridas."},
+{r:"Ecclesiastes 3:1-3",e:"There is a time for everything, and a season for every activity under the heavens: a time to be born and a time to die, a time to heal.",s:"Todo tiene su momento oportuno; hay un tiempo para nacer, y un tiempo para morir; un tiempo para plantar, y un tiempo para sanar.",d:"Health journeys have seasons. Not every season is one of flourishing — some are seasons of healing. God is present in both, purposeful in all.",p:"Lord, I trust that this is my season of healing. Be present in it.",ps:"Señor, confío en que esta es mi temporada de sanación. Sé presente en ella."},
+{r:"Numbers 21:8-9",e:"The Lord said to Moses, Make a snake and put it up on a pole; anyone who is bitten can look at it and live.",s:"El SEÑOR le dijo a Moisés: Hazte una serpiente y ponla en un asta. Cuando alguien sea mordido y la mire, vivirá.",d:"Healing required an act of faith — looking. Our own healing often begins with a choice to lift our eyes from the wound to the Healer.",p:"Lord, I lift my eyes to You. In looking to You, I trust in healing.",ps:"Señor, levanto mis ojos hacia Ti. Al mirarte, confío en la sanación."},
+{r:"Psalm 107:20",e:"He sent out his word and healed them; he rescued them from the grave.",s:"Envió su palabra para sanarlos, y así los rescató del sepulcro.",d:"The Word of God carries healing power. Receive Scripture not just as information but as medicine — God's own words carrying restorative life.",p:"Lord, send Your word over me today. Let it heal and restore me.",ps:"Señor, envía Tu palabra sobre mí hoy. Que me sane y restaure."},
+{r:"Luke 5:31",e:"Jesus answered them, It is not the healthy who need a doctor, but the sick.",s:"Jesús les contestó: No son los sanos los que necesitan médico sino los enfermos.",d:"Jesus came for the broken and the afflicted. The honest acknowledgment of our health need is the very thing that positions us for His help.",p:"Jesus, I acknowledge my need. I come to You as my Great Physician.",ps:"Jesús, reconozco mi necesidad. Vengo a Ti como mi Gran Médico."},
+{r:"James 5:14-16",e:"Is anyone among you sick? Let them call the elders of the church to pray over them. The prayer offered in faith will make the sick person well.",s:"¿Está enfermo alguno de ustedes? Haga llamar a los ancianos de la iglesia para que oren por él. La oración de fe sanará al enfermo.",d:"Healing is meant to happen in community. James calls the church to gather around the sick and pray in faith together.",p:"Lord, I receive the prayers of Your community over my health right now.",ps:"Señor, recibo las oraciones de Tu comunidad por mi salud ahora mismo."},
+{r:"Ezekiel 47:12",e:"On the river banks, on both sides, will grow all kinds of trees for food. Their leaves will not wither, nor will their fruit fail. Their fruit will serve for food and their leaves for healing.",s:"En las orillas del río crecerán toda clase de árboles frutales. Sus hojas no se marchitarán. Sus frutos servirán de alimento y sus hojas, de medicina.",d:"This vision of the river flowing from God's sanctuary producing healing trees is a picture of what God's presence does — it generates life wherever it flows.",p:"Lord, let the river of Your presence flow through me, bringing healing.",ps:"Señor, deja que el río de Tu presencia fluya a través de mí, trayendo sanación."},
+],
+// ── DAILY ──
+daily:[
+{r:"Psalm 118:24",e:"This is the day the Lord has made; let us rejoice and be glad in it.",s:"Este es el día en que el SEÑOR actuó; regocijémonos y alegrémonos en él.",n:"Every day is a gift wrapped in His grace.",ns:"Cada día es un regalo envuelto en Su gracia."},
+{r:"Lamentations 3:22-23",e:"Because of the Lord's great love we are not consumed, for his compassions never fail. They are new every morning; great is your faithfulness.",s:"El gran amor del SEÑOR nunca se acaba, y su compasión jamás se agota. Cada mañana se renuevan sus bondades; muy grande es su fidelidad.",n:"His mercies are fresh and new for you today.",ns:"Sus misericordias son frescas y nuevas para ti hoy."},
+{r:"Joshua 1:9",e:"Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.",s:"Sé fuerte y valiente. No tengas miedo ni te desanimes, porque el SEÑOR tu Dios te acompañará dondequiera que vayas.",n:"Walk boldly today — He is already where you are headed.",ns:"Camina con valentía hoy — Él ya está donde te diriges."},
+{r:"Matthew 6:33",e:"But seek first his kingdom and his righteousness, and all these things will be given to you as well.",s:"Más bien, busquen primeramente el reino de Dios y su justicia, y todas estas cosas les serán añadidas.",n:"Put Him first and watch everything else fall into place.",ns:"Ponlo primero y observa cómo todo lo demás encaja."},
+{r:"Isaiah 40:31",e:"Those who hope in the Lord will renew their strength. They will soar on wings like eagles.",s:"Los que confían en el SEÑOR renovarán sus fuerzas; volarán como las águilas.",n:"Lean on Him today and soar above every challenge.",ns:"Apóyate en Él hoy y vuela sobre cada desafío."},
+{r:"Proverbs 3:5-6",e:"Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him.",s:"Confía en el SEÑOR de todo corazón, y no en tu propia inteligencia. Reconócelo en todos tus caminos.",n:"Let Him guide every step you take today.",ns:"Déjalo guiar cada paso que des hoy."},
+{r:"Psalm 46:10",e:"Be still, and know that I am God.",s:"Quédense quietos, reconozcan que yo soy Dios.",n:"In the stillness today, hear His voice speak to your heart.",ns:"En la quietud de hoy, escucha Su voz hablar a tu corazón."},
+{r:"Romans 8:28",e:"And we know that in all things God works for the good of those who love him.",s:"Sabemos que Dios dispone todas las cosas para el bien de quienes lo aman.",n:"Even today's struggles are working for your good.",ns:"Incluso las luchas de hoy están obrando para tu bien."},
+{r:"Jeremiah 29:11",e:"For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.",s:"Porque yo sé muy bien los planes que tengo para ustedes, afirma el SEÑOR, planes de bienestar y no de calamidad, a fin de darles un futuro y una esperanza.",n:"He has a good plan for your life. Trust Him with it.",ns:"Él tiene un buen plan para tu vida. Confíalo en Él."},
+{r:"Micah 6:8",e:"He has shown you what is good. And what does the Lord require of you? To act justly and to love mercy and to walk humbly with your God.",s:"Lo que de ti espera el SEÑOR: Practicar la justicia, amar la misericordia, y humillarte ante tu Dios.",n:"Justice, mercy, humility — your calling for today.",ns:"Justicia, misericordia, humildad — tu llamado para hoy."},
+],
 };
+const SMAP=[
+{w:["forgiv","perdon"],r:"Matthew 6:14-15",e:"For if you forgive other people when they sin against you, your heavenly Father will also forgive you.",s:"Porque si perdonan a otros sus ofensas, también los perdonará a ustedes su Padre celestial.",p:"Lord, help me release this hurt and forgive as You forgave me.",ps:"Señor, ayúdame a soltar este dolor y perdonar como Tú me perdonaste."},
+{w:["hope","esperanza","hopeless"],r:"Romans 15:13",e:"May the God of hope fill you with all joy and peace as you trust in him, so that you may overflow with hope by the power of the Holy Spirit.",s:"Que el Dios de la esperanza los llene de toda alegría y paz a ustedes que creen en él, para que rebosen de esperanza por el poder del Espíritu Santo.",p:"God of hope, overflow me with Your hope right now.",ps:"Dios de la esperanza, desbórdame con Tu esperanza ahora mismo."},
+{w:["fear","afraid","miedo","temer"],r:"Isaiah 41:10",e:"So do not fear, for I am with you; do not be dismayed, for I am your God. I will strengthen you and help you.",s:"Así que no temas, porque yo estoy contigo; no te angusties, porque yo soy tu Dios. Te fortaleceré y te ayudaré.",p:"Lord, cast out every fear and fill me with Your strength.",ps:"Señor, expulsa todo miedo y lléneme de Tu fortaleza."},
+{w:["pain","hurt","dolor","sufrimiento","suffering"],r:"Psalm 34:18",e:"The Lord is close to the brokenhearted and saves those who are crushed in spirit.",s:"El SEÑOR está cerca de los quebrantados de corazón, y salva a los de espíritu abatido.",p:"Lord, You are near me in this pain. Heal my broken heart.",ps:"Señor, estás cerca de mí en este dolor. Sana mi corazón quebrantado."},
+{w:["gratitud","gratitude","grateful","thankful","gracias"],r:"1 Thessalonians 5:18",e:"Give thanks in all circumstances; for this is God's will for you in Christ Jesus.",s:"Den gracias a Dios en toda situación, porque esta es su voluntad para ustedes en Cristo Jesús.",p:"Lord, I choose gratitude even when it is hard.",ps:"Señor, elijo la gratitud incluso cuando es difícil."},
+{w:["purpose","calling","proposito","llamado"],r:"Jeremiah 29:11",e:"For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.",s:"Porque yo sé muy bien los planes que tengo para ustedes, afirma el SEÑOR, planes de bienestar y no de calamidad, a fin de darles un futuro y una esperanza.",p:"Lord, show me the purpose You placed in my heart.",ps:"Señor, muéstrame el propósito que has puesto en mi corazón."},
+{w:["heal","healing","healed","sanacion","sanar"],r:"Psalm 147:3",e:"He heals the brokenhearted and binds up their wounds.",s:"Él sana a los corazones quebrantados y venda sus heridas.",p:"Great Healer, bind up every wound in me today.",ps:"Gran Sanador, venda cada herida en mí hoy."},
+{w:["strength","strong","fuerza","fuerte"],r:"Isaiah 40:29",e:"He gives strength to the weary and increases the power of the weak.",s:"Él fortalece al cansado y acrecienta las fuerzas del débil.",p:"Lord, be my strength where I have none.",ps:"Señor, sé mi fortaleza donde no tengo ninguna."},
+{w:["peace","peaceful","paz"],r:"John 14:27",e:"Peace I leave with you; my peace I give you. I do not give to you as the world gives. Do not let your hearts be troubled.",s:"La paz les dejo; mi paz les doy. No se turbe su corazón ni tenga miedo.",p:"Jesus, let Your peace fill every corner of my heart.",ps:"Jesús, que Tu paz llene cada rincón de mi corazón."},
+{w:["faith","trust","fe","confianza"],r:"Hebrews 11:1",e:"Now faith is confidence in what we hope for and assurance about what we do not see.",s:"Ahora bien, la fe es la garantía de lo que se espera, la certeza de lo que no se ve.",p:"Lord, strengthen my faith to trust what I cannot yet see.",ps:"Señor, fortalece mi fe para confiar en lo que aún no puedo ver."},
+{w:["wisdom","wise","sabiduria","sabio"],r:"James 1:5",e:"If any of you lacks wisdom, you should ask God, who gives generously to all without finding fault, and it will be given to you.",s:"Si a alguno de ustedes le falta sabiduría, pídasela a Dios, y él se la dará generosamente sin menospreciar a nadie.",p:"God, I ask for Your wisdom right now. Grant it generously.",ps:"Dios, pido Tu sabiduría ahora mismo. Concédela generosamente."},
+{w:["depress","sad","sadness","tristeza","triste"],r:"Psalm 42:11",e:"Why, my soul, are you downcast? Put your hope in God, for I will yet praise him, my Savior and my God.",s:"Por qué voy a angustiarme? En Dios pondré mi esperanza, y todavía lo alabaré. El es mi Salvador y mi Dios.",p:"Lord, lift my downcast soul and give me hope again.",ps:"Señor, levanta mi alma abatida y dame esperanza de nuevo."},
+{w:["lost","direction","guidance","guia"],r:"Psalm 32:8",e:"I will instruct you and teach you in the way you should go; I will counsel you with my loving eye on you.",s:"El SEÑOR dice: Yo te instruiré, yo te mostraré el camino que debes seguir; yo te daré consejos y velaré por ti.",p:"Lord, guide my steps clearly. Show me the way to go.",ps:"Señor, guía mis pasos claramente. Muéstrame el camino a seguir."},
+{w:["money","financial","dinero","provision"],r:"Philippians 4:19",e:"And my God will meet all your needs according to the riches of his glory in Christ Jesus.",s:"Mi Dios les proveerá de todo lo que necesiten, conforme a las gloriosas riquezas que tiene en Cristo Jesús.",p:"Father, I trust You to provide everything I need.",ps:"Padre, confío en Ti para proveer todo lo que necesito."},
+{w:["family","familia","children","marriage","matrimonio"],r:"Joshua 24:15",e:"But as for me and my household, we will serve the Lord.",s:"Por mi parte, mi familia y yo serviremos al SEÑOR.",p:"Lord, be the center of my home and family.",ps:"Señor, sé el centro de mi hogar y familia."},
+{w:["work","job","trabajo","career"],r:"Colossians 3:23",e:"Whatever you do, work at it with all your heart, as working for the Lord, not for human masters.",s:"Hagan lo que hagan, trabajen de buena gana, como para el Señor y no como para nadie en este mundo.",p:"Lord, help me see my work as an offering to You.",ps:"Señor, ayúdame a ver mi trabajo como una ofrenda para Ti."},
+{w:["grief","loss","death","mourning","duelo"],r:"Revelation 21:4",e:"He will wipe every tear from their eyes. There will be no more death or mourning or crying or pain.",s:"El les enjugará toda lágrima de los ojos. Ya no habrá muerte, ni llanto, ni lamento ni dolor.",p:"Lord, wipe my tears and hold me close in this grief.",ps:"Señor, seca mis lágrimas y abrazame en este duelo."},
+{w:["patience","waiting","espera","paciencia"],r:"Psalm 27:14",e:"Wait for the Lord; be strong and take heart and wait for the Lord.",s:"Pon tu esperanza en el SEÑOR; ten valor, cobra ánimo; pon tu esperanza en el SEÑOR.",p:"Lord, teach me to wait on You with courage and hope.",ps:"Señor, enséñame a esperar en Ti con valentía y esperanza."},
+{w:["doubt","doubting","duda","dudar"],r:"Mark 9:24",e:"Immediately the boy's father exclaimed: I do believe; help me overcome my unbelief!",s:"Al instante el padre del muchacho exclamó: Sí creo, ayúdame en mi poca fe.",p:"Lord, I believe. Help me in my unbelief.",ps:"Señor, creo. Ayúdame en mi incredulidad."},
+{w:["joy","gozo","alegria","happiness"],r:"Psalm 16:11",e:"You make known to me the path of life; you will fill me with joy in your presence, with eternal pleasures at your right hand.",s:"Me has dado a conocer la senda de la vida; me llenarás de alegría en tu presencia, y de dicha eterna a tu derecha.",p:"Lord, fill me with joy in Your presence today.",ps:"Señor, lléneme de alegría en Tu presencia hoy."},
+{w:["salvation","saved","salvacion","salvo"],r:"Romans 10:9",e:"If you declare with your mouth Jesus is Lord, and believe in your heart that God raised him from the dead, you will be saved.",s:"Si confiesas con tu boca que Jesús es el Señor, y crees en tu corazón que Dios lo levantó de entre los muertos, serás salvo.",p:"Jesus, You are my Lord and Savior. I rest in Your salvation.",ps:"Jesús, Eres mi Señor y Salvador. Descanso en Tu salvación."},
+{w:["mercy","compassion","misericordia","compasion"],r:"Lamentations 3:22-23",e:"Because of the Lord great love we are not consumed, for his compassions never fail. They are new every morning.",s:"El gran amor del SEÑOR nunca se acaba, y su compasión jamás se agota. Cada mañana se renuevan sus bondades.",p:"Lord, I receive Your new mercies today. They are enough.",ps:"Señor, recibo Tus nuevas misericordias hoy. Son suficientes."},
+{w:["kindness","kind","amabilidad","bondad"],r:"Ephesians 4:32",e:"Be kind and compassionate to one another, forgiving each other, just as in Christ God forgave you.",s:"Sean bondadosos y compasivos unos con otros, y perdónense mutuamente, así como Dios los perdonó a ustedes en Cristo.",p:"Lord, help me show kindness as freely as You have shown it to me.",ps:"Señor, ayúdame a mostrar bondad tan libremente como Tú me la has mostrado."},
+{w:["encour","animo","animar"],r:"Isaiah 41:10",e:"So do not fear, for I am with you; do not be dismayed, for I am your God. I will strengthen you and help you.",s:"Así que no temas, porque yo estoy contigo; no te angusties, porque yo soy tu Dios. Te fortaleceré y te ayudaré.",p:"Lord, I receive Your encouragement right now. You are with me.",ps:"Señor, recibo Tu aliento ahora mismo. Estás conmigo."},
+];
 
-let lang = "en";
-let activeTabId = null;
-let tabFetchCount = 0;    // how many times this tab has been fetched
-let tabFetchId = 0;       // race-condition guard
-let searchFetchId = 0;
-let lastTabVerse = {};    // track last verse per tab to avoid repeats
-let lastSearchVerse = {}; // track last verse per query
+const TABS=[
+  {id:"anxiety",   label:"Anxiety",    lEs:"Ansiedad",  em:"🕊️",c:"#C4A4D4",g:"rgba(196,164,212,0.4)"},
+  {id:"stress",    label:"Stress",     lEs:"Estrés",    em:"🌿",c:"#8FC4A0",g:"rgba(143,196,160,0.4)"},
+  {id:"loneliness",label:"Loneliness", lEs:"Soledad",   em:"✨",c:"#D4A4C4",g:"rgba(212,164,196,0.4)"},
+  {id:"love",      label:"Love",       lEs:"Amor",      em:"❤️",c:"#E4908A",g:"rgba(228,144,138,0.4)"},
+  {id:"anger",     label:"Anger",      lEs:"Ira",       em:"🔥",c:"#E4B080",g:"rgba(228,176,128,0.4)"},
+  {id:"health",    label:"Health",     lEs:"Salud",     em:"🌱",c:"#A4C880",g:"rgba(164,200,128,0.4)"},
+];
+const TM={};TABS.forEach(t=>TM[t.id]=t);
+const CE=["forgiveness","hope","fear","pain","gratitude","purpose","healing","strength","peace","wisdom","joy","trust"];
+const CS=["perdón","esperanza","miedo","dolor","gratitud","propósito","sanación","fortaleza","paz","sabiduría","gozo","confianza"];
 
-/* ══════════════════════════════════════════
-   SPLASH
-══════════════════════════════════════════ */
-setTimeout(() => {
-  const s = document.getElementById('splash');
-  s.classList.add('out');
-  setTimeout(() => {
-    s.classList.add('gone');
-    document.getElementById('app').classList.add('visible');
-    renderTabs();
-    renderChips();
-    loadDailyVerse();
-  }, 650);
-}, 2600);
+let lang="en",actTab=null,sqLast="";
+const tidx={};
+const lsr={};
 
-/* ══════════════════════════════════════════
-   GOLD DUST
-══════════════════════════════════════════ */
-const GOLD = ["#F5D98A","#D4AF6A","#FFE9A0","#C89020","#FFF0B0","#E8C060","#F0D070"];
-document.addEventListener('click', e => {
-  const layer = document.getElementById('dust-layer');
-  const frags = [];
-  const count = 16 + Math.floor(Math.random()*14);
-  for (let i = 0; i < count; i++) {
-    const el = document.createElement('div');
-    el.className = 'dust';
-    const size  = 1.5 + Math.random()*4;
-    const color = GOLD[Math.floor(Math.random()*GOLD.length)];
-    const angle = Math.random()*Math.PI*2;
-    const dist  = 25 + Math.random()*65;
-    const dx    = (Math.cos(angle)*dist).toFixed(1);
-    const dy    = (Math.sin(angle)*dist - 20).toFixed(1);
-    const dur   = 550 + Math.random()*750;
-    const delay = Math.random()*100;
-    el.style.cssText = `left:${e.clientX}px;top:${e.clientY}px;width:${size}px;height:${size}px;
-      background:${color};box-shadow:0 0 ${size*2}px ${color};
-      border-radius:${Math.random()>.35?"50%":"2px"};
-      --dx:${dx}px;--dy:${dy}px;--rot:${Math.floor(Math.random()*360)}deg;
-      --dur:${dur}ms;--delay:${delay}ms;
-      animation-duration:${dur}ms;animation-delay:${delay}ms`;
-    layer.appendChild(el);
-    frags.push(el);
-  }
-  setTimeout(() => frags.forEach(f => f.remove()), 1600);
-});
-
-/* ══════════════════════════════════════════
-   CROSS SVG helpers
-══════════════════════════════════════════ */
-function crossSVG(size) {
-  const id = 'g'+size+'_'+Math.random().toString(36).slice(2,5);
-  return `<svg width="${size}" height="${size}" viewBox="0 0 90 90" fill="none">
-    <defs>
-      <linearGradient id="${id}" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#F5D98A"/><stop offset="40%" stop-color="#D4AF6A"/><stop offset="100%" stop-color="#8B6914"/>
-      </linearGradient>
-      <filter id="f${id}" x="-50%" y="-50%" width="200%" height="200%">
-        <feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-      </filter>
-    </defs>
-    <rect x="37" y="8" width="16" height="74" rx="6" fill="url(#${id})" filter="url(#f${id})"/>
-    <rect x="14" y="28" width="62" height="16" rx="6" fill="url(#${id})" filter="url(#f${id})"/>
-  </svg>`;
+function shuf(a,seed){
+  const x=[...a];let s=seed==null?Math.floor(Math.random()*99999):seed;
+  for(let i=x.length-1;i>0;i--){s=(s*9301+49297)%233280;const j=Math.floor(s/233280*(i+1));[x[i],x[j]]=[x[j],x[i]];}
+  return x;
 }
-
-function sparkleHTML(color) {
-  const pos = [[10,15],[26,26],[42,37],[58,48],[74,59]];
-  return pos.map(([l,t],i)=>
-    `<div class="sparkle" style="left:${l}%;top:${t}%;background:${color};animation-duration:${1.38+i*.3}s;animation-delay:${i*.2}s"></div>`
-  ).join('');
+function getDV(){
+  const d=new Date().getDate()+new Date().getMonth()*31;
+  return shuf(B.daily,d)[d%B.daily.length];
 }
-
-function loadingHTML(txt) {
-  return `<div class="loading-box">
-    <div class="loading-cross">${crossSVG(46)}</div>
-    <div class="loading-txt">${txt}</div>
-  </div>`;
+function nextTV(id){
+  if(!tidx[id]){tidx[id]={p:shuf(B[id]),i:0};}
+  const t=tidx[id];
+  const v=t.p[t.i%t.p.length];
+  t.i++;
+  if(t.i>=t.p.length){t.p=shuf(B[id]);t.i=0;}
+  return v;
 }
-
-/* ══════════════════════════════════════════
-   CLAUDE API — robust with retries & variety
-══════════════════════════════════════════ */
-async function callClaude(prompt, retries=2) {
-  for (let attempt=0; attempt<=retries; attempt++) {
-    try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({
-          model:"claude-sonnet-4-6",
-          max_tokens:800,
-          messages:[{role:"user", content:prompt}]
-        })
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      const raw = data.content?.find(b=>b.type==="text")?.text || "";
-      // Strip any markdown fences
-      const clean = raw.replace(/```json\s*/gi,"").replace(/```\s*/g,"").trim();
-      // Find the JSON object
-      const match = clean.match(/\{[\s\S]*\}/);
-      if (!match) throw new Error("No JSON found");
-      return JSON.parse(match[0]);
-    } catch(e) {
-      if (attempt === retries) throw e;
-      await new Promise(r => setTimeout(r, 800));
+function searchV(q){
+  const ql=q.toLowerCase().trim();
+  const ws=ql.split(/\s+/);
+  const avoid=lsr[ql];
+  for(const m of SMAP){
+    if(m.w.some(w=>ws.some(qw=>qw.includes(w)||w.includes(qw)))){
+      if(m.r!==avoid){lsr[ql]=m.r;return m;}
     }
   }
-}
-
-/* ══════════════════════════════════════════
-   BUILD VERSE PROMPT — key to variety
-══════════════════════════════════════════ */
-function buildVersePrompt(type, value, extra={}) {
-  const isEs = lang==="es";
-  const li = isEs
-    ? "Respond entirely in Spanish. Use the Reina-Valera 1960 (RVR1960) Bible translation."
-    : "Respond in English. Use the NIV (New International Version) translation.";
-
-  // Unique entropy: timestamp + random
-  const entropy = Date.now().toString(36) + Math.random().toString(36).slice(2,10);
-
-  // Pool of recent verses to avoid
-  const avoid = extra.avoid ? `\nDO NOT use any of these references: ${extra.avoid.join(", ")}.` : "";
-
-  // Suggested pool to pick from
-  const pool = extra.pool ? `\nPREFERRED pool to choose from (but you may go outside it): ${extra.pool.join(", ")}.` : "";
-
-  let coreInstruction = "";
-  if (type === "tab") {
-    coreInstruction = `Give me one powerful, comforting Bible verse for someone feeling "${value}".
-The verse must DIRECTLY address this emotion with God's comfort, wisdom, or encouragement.
-Choose a verse that feels personal and specific to "${value}" — not a generic popular verse.
-Vary your choice across the entire Bible: Psalms, Proverbs, Gospels, Epistles, Minor Prophets, etc.${pool}${avoid}`;
-  } else if (type === "search") {
-    coreInstruction = `The user typed: "${value}"
-Find the single most meaningful, relevant Bible verse for their feeling, topic, or situation.
-Choose a verse that speaks directly to "${value}" with hope, healing, or truth.${avoid}`;
-  } else if (type === "daily") {
-    coreInstruction = `Give me one uplifting Bible verse about "${value}" for today's devotional.
-Choose something inspiring and less commonly seen — avoid overused favorites.${avoid}`;
+  const all=[];
+  Object.entries(B).forEach(([k,vs])=>vs.forEach(v=>all.push({...v,_k:k})));
+  const scored=all.filter(v=>v.r!==avoid).map(v=>{
+    const h=(v.r+" "+v.e+" "+(v.s||"")).toLowerCase();
+    const sc=ws.reduce((s,w)=>s+(w.length>2&&h.includes(w)?1:0),0);
+    return{v,sc};
+  }).filter(x=>x.sc>0).sort((a,b)=>b.sc-a.sc);
+  if(scored.length){
+    const top=scored.slice(0,Math.min(4,scored.length));
+    const pick=top[Math.floor(Math.random()*top.length)].v;
+    lsr[ql]=pick.r;return pick;
   }
-
-  const jsonShape = type === "daily"
-    ? `{"reference":"Book Chapter:Verse","text":"full verse text here","reflection":"one warm sentence of encouragement, max 18 words"}`
-    : `{"reference":"Book Chapter:Verse","text":"full verse text here","prayer":"a personal 1-sentence prayer starter, max 22 words"}`;
-
-  return `${li}
-${coreInstruction}
-[entropy:${entropy}]
-
-Return ONLY a JSON object — no markdown, no backticks, no explanation:
-${jsonShape}`;
+  const fb=all.filter(v=>v.r!==avoid);
+  const pick=fb[Math.floor(Math.random()*fb.length)];
+  lsr[ql]=pick.r;return pick;
 }
 
-/* ══════════════════════════════════════════
-   DAILY VERSE
-══════════════════════════════════════════ */
-const DAILY_TOPICS    = ["faith","hope","grace","peace","strength","wisdom","joy","gratitude","trust","courage"];
-const DAILY_TOPICS_ES = ["fe","esperanza","gracia","paz","fortaleza","sabiduría","alegría","gratitud","confianza","valentía"];
+function vt(v){return lang==="es"?(v.s||v.e):v.e}
+function pt(v){return lang==="es"?(v.ps||v.p||""):(v.p||"")}
+function nt(v){return lang==="es"?(v.ns||v.n||""):(v.n||"")}
+function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
 
-async function loadDailyVerse() {
-  const el = document.getElementById('daily-content');
-  const lbl = document.getElementById('daily-load-txt');
-  if(lbl) lbl.textContent = lang==="es" ? "Abriendo la Palabra..." : "Opening the Word...";
-  el.innerHTML = loadingHTML(lang==="es" ? "Abriendo la Palabra..." : "Opening the Word...");
-
-  const idx = new Date().getDate() % DAILY_TOPICS.length;
-  const topic = lang==="es" ? DAILY_TOPICS_ES[idx] : DAILY_TOPICS[idx];
-
-  try {
-    const v = await callClaude(buildVersePrompt("daily", topic));
-    el.innerHTML = `
-      <div class="verse-text-el">"${escHtml(v.text)}"</div>
-      <div class="verse-ref">${escHtml(v.reference)}</div>
-      ${v.reflection ? `<div class="verse-reflection">${escHtml(v.reflection)}</div>` : ""}
-    `;
-    // Add sparkles to daily card
-    document.getElementById('daily-sparkles').innerHTML = sparkleHTML('#D4AF6A');
-  } catch(e) {
-    const fb = lang==="es"
-      ? {text:"El SEÑOR es mi pastor; nada me faltará.",reference:"Salmos 23:1",reflection:"Él cuida de ti en cada paso del camino."}
-      : {text:"The Lord is my shepherd; I shall not want.",reference:"Psalm 23:1",reflection:"He tends to your every need with loving care."};
-    el.innerHTML = `<div class="verse-text-el">"${fb.text}"</div><div class="verse-ref">${fb.reference}</div><div class="verse-reflection">${fb.reflection}</div>`;
-  }
+function spk(c){
+  return [[10,15],[26,26],[42,37],[58,48],[74,59]].map(([l,t],i)=>
+    `<div class="sparkle" style="left:${l}%;top:${t}%;background:${c};animation-duration:${1.38+i*.3}s;animation-delay:${i*.2}s"></div>`
+  ).join("");
 }
 
-/* ══════════════════════════════════════════
-   TAB VERSE — always fresh
-══════════════════════════════════════════ */
-async function fetchTabVerse(tab) {
-  const myId = ++tabFetchId;
-  activeTabId = tab.id;
-  renderTabs();
-
-  const wrap = document.getElementById('tab-result');
-  const color = tab.color;
-  const glow  = tab.glow;
-  const emotion = lang==="es" ? tab.labelEs : tab.label;
-
-  // Show loading immediately
-  wrap.innerHTML = `
-    <div class="result-card show" style="background:linear-gradient(135deg,${color}18,rgba(60,10,35,0.7));border:1px solid ${color}44;box-shadow:0 8px 32px ${color}33">
-      ${loadingHTML(lang==="es" ? "Buscando las Escrituras..." : "Searching the scriptures...")}
+function showRC(wrapId,v,label,c,glow,onAnother){
+  const pr=pt(v);
+  const PL=lang==="es"?"🙏 Comienza tu oración":"🙏 Begin your prayer";
+  const AN=lang==="es"?"↻ Otro Versículo":"↻ Another Verse";
+  const dv=v.d?`<div class="result-devote">${esc(v.d)}</div>`:"";
+  document.getElementById(wrapId).innerHTML=`
+    <div class="result-card" style="background:linear-gradient(135deg,${c}18,rgba(60,10,35,.72));border:1px solid ${c}55;box-shadow:0 8px 32px ${c}33">
+      <div class="sparkles">${spk(c)}</div>
+      <div class="result-label" style="color:${c}">${label} ✦</div>
+      <div class="result-verse">"${esc(vt(v))}"</div>
+      <div class="result-ref" style="color:${c}">— ${esc(v.r)}</div>
+      ${dv}
+      ${pr?`<div class="prayer-block" style="border-top:1px solid ${c}28"><div class="prayer-label">${PL}</div><div class="prayer-text">${esc(pr)}</div></div>`:""}
+      ${onAnother?`<button class="another-btn" style="border-color:${c}55;color:${c}" onclick="${onAnother}">${AN}</button>`:""}
     </div>`;
+}
 
-  // Build avoid list from recent verses for this tab
-  const recentForTab = lastTabVerse[tab.id] ? [lastTabVerse[tab.id]] : [];
-  const pool = VERSE_POOLS[tab.id] || [];
+function renderDV(){
+  const v=getDV();const n=nt(v);
+  document.getElementById("dc").innerHTML=
+    `<div class="daily-vt">"${esc(vt(v))}"</div><div class="daily-vr">${esc(v.r)}</div>${n?`<div class="daily-vn">${esc(n)}</div>`:""}`;
+  document.getElementById("dsp").innerHTML=spk("#D4AF6A");
+}
 
-  try {
-    const v = await callClaude(buildVersePrompt("tab", emotion, {
-      avoid: recentForTab,
-      pool: pool
-    }));
+function showTV(id){
+  const tab=TM[id];if(!tab)return;
+  actTab=id;renderTabs();
+  const v=nextTV(id);
+  const label=lang==="es"?`✦ Una Palabra para Tu ${tab.lEs}`:`✦ A Word for Your ${tab.label}`;
+  showRC("tr",v,label,tab.c,tab.g,`showTV('${id}')`);
+  setTimeout(()=>document.getElementById("tr").scrollIntoView({behavior:"smooth",block:"nearest"}),80);
+}
 
-    if (myId !== tabFetchId) return; // stale — a newer fetch is running
+function doSearch(){
+  const q=document.getElementById("si").value.trim();if(!q)return;
+  sqLast=q;_search(q);
+}
+function _search(q){
+  const v=searchV(q);
+  const c="#C4A4D4";
+  const label=lang==="es"?`✦ Para "${esc(q)}"`:`✦ For "${esc(q)}"`;
+  document.getElementById("chips").style.display="none";
+  showRC("sr",v,label,c,"rgba(196,164,212,0.4)","searchAgain()");
+}
+function searchAgain(){
+  const q=document.getElementById("si").value.trim()||sqLast;
+  if(q){delete lsr[q.toLowerCase().trim()];sqLast=q;_search(q);}
+}
+function onST(){document.getElementById("cb").classList.toggle("show",document.getElementById("si").value.length>0);}
+function onSK(e){if(e.key==="Enter"){e.preventDefault();doSearch();}}
+function clearS(){
+  document.getElementById("si").value="";document.getElementById("cb").classList.remove("show");
+  document.getElementById("sr").innerHTML="";document.getElementById("chips").style.display="flex";sqLast="";
+}
+function chipClick(c){
+  document.getElementById("si").value=c;document.getElementById("cb").classList.add("show");
+  sqLast=c;delete lsr[c.toLowerCase()];_search(c);
+}
 
-    // Save to avoid list
-    lastTabVerse[tab.id] = v.reference;
+function renderTabs(){
+  document.getElementById("tg").innerHTML=TABS.map(tab=>{
+    const on=actTab===tab.id;
+    const lbl=lang==="es"?tab.lEs:tab.label;
+    const sub=lang==="es"?`<span class="tab-sub" style="color:${on?tab.c+"77":"rgba(212,175,106,.22)"}">${tab.label}</span>`:"";
+    return `<button class="tab-btn" style="background:${on?`linear-gradient(135deg,${tab.c}28,${tab.c}12)`:`linear-gradient(135deg,rgba(50,10,35,.7),rgba(35,8,25,.8))`};border-color:${on?`${tab.c}99`:`rgba(212,175,106,.12)`};box-shadow:${on?`0 4px 18px ${tab.g}`:`none`}" onclick="showTV('${tab.id}')">
+      <span class="tab-emoji">${tab.em}</span>
+      <span class="tab-label" style="color:${on?tab.c:`rgba(212,175,106,.5)`};font-weight:${on?700:500}">${lbl}${sub}</span>
+    </button>`;
+  }).join("");
+}
 
-    const wordLabel = lang==="es" ? `✦ Una Palabra para Tu ${tab.labelEs}` : `✦ A Word for Your ${tab.label}`;
-    const prayerLbl = lang==="es" ? "🙏 Comienza tu oración" : "🙏 Begin your prayer";
-    const anotherTxt= lang==="es" ? "↻ Otro Versículo" : "↻ Another Verse";
+function renderChips(){
+  const ch=lang==="es"?CS:CE;
+  document.getElementById("chips").innerHTML=ch.map(c=>`<button class="chip" onclick="chipClick('${c}')">${c}</button>`).join("");
+  document.getElementById("chips").style.display="flex";
+}
 
-    wrap.innerHTML = `
-      <div class="result-card show" style="background:linear-gradient(135deg,${color}18,rgba(60,10,35,0.7));border:1px solid ${color}44;box-shadow:0 8px 32px ${color}33">
-        <div class="sparkles">${sparkleHTML(color)}</div>
-        <div class="result-label" style="color:${color}">${wordLabel} ✦</div>
-        <div class="result-verse">"${escHtml(v.text)}"</div>
-        <div class="result-ref" style="color:${color}">— ${escHtml(v.reference)}</div>
-        ${v.prayer ? `<div class="prayer-block" style="border-top:1px solid ${color}28">
-          <div class="prayer-label">${prayerLbl}</div>
-          <div class="prayer-text">${escHtml(v.prayer)}</div>
-        </div>` : ""}
-        <button class="another-btn" id="another-btn-tab"
-          style="border-color:${color}55;color:${color}"
-          onclick="anotherTabVerse('${tab.id}')">
-          ${anotherTxt}
-        </button>
-      </div>`;
-  } catch(e) {
-    if (myId !== tabFetchId) return;
-    wrap.innerHTML = `
-      <div class="result-card show" style="background:linear-gradient(135deg,${color}18,rgba(60,10,35,0.7));border:1px solid ${color}44">
-        <div class="result-label" style="color:${color}">✦ ${lang==="es"?"Error al cargar":"Couldn't load verse"} ✦</div>
-        <div class="error-msg">${lang==="es"?"Toca 'Otro Versículo' para intentar de nuevo.":"Tap 'Another Verse' to try again."}</div>
-        <button class="another-btn" style="border-color:${color}55;color:${color}" onclick="anotherTabVerse('${tab.id}')">
-          ${lang==="es"?"↻ Intentar de nuevo":"↻ Try again"}
-        </button>
-      </div>`;
+function switchLang(l){
+  if(l===lang)return;lang=l;actTab=null;
+  Object.keys(lsr).forEach(k=>delete lsr[k]);
+  document.getElementById("btn-en").classList.toggle("active",l==="en");
+  document.getElementById("btn-es").classList.toggle("active",l==="es");
+  document.getElementById("es-notice").classList.toggle("show",l==="es");
+  document.getElementById("app-sub").textContent=l==="es"?"Las Escrituras para Cada Temporada":"Scripture for Every Season";
+  document.getElementById("dl").textContent=l==="es"?"✦ Versículo del Día ✦":"✦ Verse of the Day ✦";
+  document.getElementById("sl").textContent=l==="es"?"✦ Buscar por Sentimiento ✦":"✦ Search by Feeling or Topic ✦";
+  document.getElementById("si").placeholder=l==="es"?"ej. perdón, esperanza, miedo...":"e.g. forgiveness, hope, fear...";
+  document.getElementById("sg-btn").textContent=l==="es"?"BUSCAR":"FIND";
+  document.getElementById("scl").textContent=l==="es"?"¿Qué hay en tu corazón hoy?":"What\'s on your heart today?";
+  document.getElementById("ft").textContent=l==="es"?'"Tu palabra es una lámpara a mis pies." — Salmos 119:105':'"Your word is a lamp to my feet." — Psalm 119:105';
+  document.getElementById("tr").innerHTML="";document.getElementById("sr").innerHTML="";
+  document.getElementById("si").value="";document.getElementById("cb").classList.remove("show");sqLast="";
+  renderTabs();renderChips();renderDV();
+}
+
+const GOLD=["#F5D98A","#D4AF6A","#FFE9A0","#C89020","#FFF0B0","#E8C060","#F0D070"];
+document.addEventListener("click",e=>{
+  const layer=document.getElementById("dust-layer");const frags=[];
+  const n=16+Math.floor(Math.random()*14);
+  for(let i=0;i<n;i++){
+    const el=document.createElement("div");el.className="dust";
+    const sz=1.5+Math.random()*4;const col=GOLD[Math.floor(Math.random()*GOLD.length)];
+    const ang=Math.random()*Math.PI*2;const dist=25+Math.random()*65;
+    const dx=(Math.cos(ang)*dist).toFixed(1);const dy=(Math.sin(ang)*dist-20).toFixed(1);
+    const dur=550+Math.random()*750;const delay=Math.random()*100;
+    el.style.cssText=`left:${e.clientX}px;top:${e.clientY}px;width:${sz}px;height:${sz}px;background:${col};box-shadow:0 0 ${sz*2}px ${col};border-radius:${Math.random()>.35?"50%":"2px"};--dx:${dx}px;--dy:${dy}px;--rot:${Math.floor(Math.random()*360)}deg;--dur:${dur}ms;--delay:${delay}ms;animation-duration:${dur}ms;animation-delay:${delay}ms`;
+    layer.appendChild(el);frags.push(el);
   }
-}
+  setTimeout(()=>frags.forEach(f=>f.remove()),1600);
+});
 
-// Separate function so the button always calls with current tab
-async function anotherTabVerse(tabId) {
-  const tab = window.TABS_MAP[tabId];
-  if (!tab) return;
-  // Disable button immediately to prevent double-taps
-  const btn = document.getElementById('another-btn-tab');
-  if (btn) { btn.disabled = true; btn.textContent = lang==="es"?"Cargando...":"Loading..."; }
-  await fetchTabVerse(tab);
-}
-
-/* ══════════════════════════════════════════
-   SEARCH — fresh every time
-══════════════════════════════════════════ */
-function onSearchType() {
-  const q = document.getElementById('search-input').value;
-  document.getElementById('clear-btn').classList.toggle('show', q.length > 0);
-}
-function onSearchKey(e) {
-  if (e.key === "Enter") { e.preventDefault(); doSearch(); }
-}
-function clearSearch() {
-  document.getElementById('search-input').value = '';
-  document.getElementById('clear-btn').classList.remove('show');
-  document.getElementById('search-result').innerHTML = '';
-  document.getElementById('chips').style.display = 'flex';
-  lastSearchVerse = {};
-}
-
-async function doSearch() {
-  const q = document.getElementById('search-input').value.trim();
-  if (!q) return;
-  const myId = ++searchFetchId;
-
-  document.getElementById('chips').style.display = 'none';
-  const wrap = document.getElementById('search-result');
-  const color = "#C4A4D4";
-
-  wrap.innerHTML = `
-    <div class="result-card show" style="background:linear-gradient(135deg,${color}18,rgba(60,10,35,0.7));border:1px solid ${color}44;margin-top:14px">
-      ${loadingHTML(lang==="es" ? "Buscando las Escrituras..." : "Searching the scriptures...")}
-    </div>`;
-
-  const avoid = lastSearchVerse[q] ? [lastSearchVerse[q]] : [];
-  const prayerLbl = lang==="es" ? "🙏 Comienza tu oración" : "🙏 Begin your prayer";
-  const forLabel  = lang==="es" ? `✦ Para "${q}"` : `✦ For "${q}"`;
-
-  try {
-    const v = await callClaude(buildVersePrompt("search", q, {avoid}));
-    if (myId !== searchFetchId) return;
-
-    lastSearchVerse[q] = v.reference;
-
-    wrap.innerHTML = `
-      <div class="result-card show" style="background:linear-gradient(135deg,${color}18,rgba(60,10,35,0.7));border:1px solid ${color}44;box-shadow:0 8px 32px ${color}33;margin-top:14px">
-        <div class="sparkles">${sparkleHTML(color)}</div>
-        <div class="result-label" style="color:${color}">${forLabel} ✦</div>
-        <div class="result-verse">"${escHtml(v.text)}"</div>
-        <div class="result-ref" style="color:${color}">— ${escHtml(v.reference)}</div>
-        ${v.prayer ? `<div class="prayer-block" style="border-top:1px solid ${color}28">
-          <div class="prayer-label">${prayerLbl}</div>
-          <div class="prayer-text">${escHtml(v.prayer)}</div>
-        </div>` : ""}
-        <button class="another-btn" style="border-color:${color}55;color:${color}" onclick="searchAgain()">
-          ${lang==="es" ? "↻ Otro Versículo" : "↻ Another Verse"}
-        </button>
-      </div>`;
-  } catch(e) {
-    if (myId !== searchFetchId) return;
-    wrap.innerHTML = `
-      <div class="result-card show" style="border:1px solid ${color}44;margin-top:14px">
-        <div class="error-msg">${lang==="es"?"No se pudo cargar. Toca 'Otro Versículo' para reintentar.":"Couldn't load. Tap 'Another Verse' to retry."}</div>
-        <button class="another-btn" style="border-color:${color}55;color:${color}" onclick="searchAgain()">
-          ${lang==="es" ? "↻ Intentar de nuevo" : "↻ Try again"}
-        </button>
-      </div>`;
-  }
-}
-
-function searchAgain() {
-  // Clear cache for this query so we get a different verse
-  const q = document.getElementById('search-input').value.trim();
-  if (lastSearchVerse[q]) delete lastSearchVerse[q];
-  doSearch();
-}
-
-/* ══════════════════════════════════════════
-   TABS RENDER
-══════════════════════════════════════════ */
-function renderTabs() {
-  const grid = document.getElementById('tabs-grid');
-  grid.innerHTML = TABS.map(tab => {
-    const isActive = activeTabId === tab.id;
-    const bg = isActive
-      ? `linear-gradient(135deg,${tab.color}28,${tab.color}12)`
-      : `linear-gradient(135deg,rgba(50,10,35,.7),rgba(35,8,25,.8))`;
-    const bc = isActive ? `${tab.color}99` : `rgba(212,175,106,.12)`;
-    const sh = isActive ? `0 4px 18px ${tab.glow}` : `none`;
-    const lc = isActive ? tab.color : `rgba(212,175,106,.5)`;
-    const lw = isActive ? 700 : 500;
-    const lbl = lang==="es" ? tab.labelEs : tab.label;
-    const sub = lang==="es" ? `<span class="tab-label-sub" style="color:${isActive?tab.color+'77':'rgba(212,175,106,.22)'}">${tab.label}</span>` : "";
-    return `
-      <button class="tab-btn${isActive?' active':''}"
-        style="background:${bg};border-color:${bc};box-shadow:${sh}"
-        onclick="fetchTabVerse(window.TABS_MAP['${tab.id}'])">
-        <span class="tab-emoji">${tab.emoji}</span>
-        <span class="tab-label" style="color:${lc};font-weight:${lw}">${lbl}${sub}</span>
-      </button>`;
-  }).join('');
-}
-
-/* ══════════════════════════════════════════
-   CHIPS
-══════════════════════════════════════════ */
-function renderChips() {
-  const chips = lang==="es" ? CHIPS_ES : CHIPS_EN;
-  document.getElementById('chips').innerHTML = chips.map(c =>
-    `<button class="chip" onclick="chipClick('${c}')">${c}</button>`
-  ).join('');
-  document.getElementById('chips').style.display = 'flex';
-}
-
-function chipClick(chip) {
-  document.getElementById('search-input').value = chip;
-  document.getElementById('clear-btn').classList.add('show');
-  document.getElementById('chips').style.display = 'none';
-  doSearch();
-}
-
-/* ══════════════════════════════════════════
-   LANGUAGE
-══════════════════════════════════════════ */
-function switchLang(l) {
-  if (l === lang) return;
-  lang = l;
-  activeTabId = null;
-  lastTabVerse = {};
-  lastSearchVerse = {};
-
-  document.getElementById('btn-en').classList.toggle('active', l==="en");
-  document.getElementById('btn-es').classList.toggle('active', l==="es");
-  document.getElementById('es-notice').classList.toggle('show', l==="es");
-
-  // Update static strings
-  document.getElementById('app-sub').textContent     = l==="es" ? "Las Escrituras para Cada Temporada" : "Scripture for Every Season";
-  document.getElementById('daily-label').textContent  = l==="es" ? "✦ Versículo del Día ✦" : "✦ Verse of the Day ✦";
-  document.getElementById('search-label').textContent = l==="es" ? "✦ Buscar por Sentimiento ✦" : "✦ Search by Feeling or Topic ✦";
-  document.getElementById('search-input').placeholder = l==="es" ? "ej. perdón, esperanza, miedo..." : "e.g. forgiveness, hope, fear...";
-  document.getElementById('search-go').textContent    = l==="es" ? "BUSCAR" : "FIND";
-  document.getElementById('section-label').textContent= l==="es" ? "¿Qué hay en tu corazón hoy?" : "What's on your heart today?";
-  document.getElementById('footer').textContent       = l==="es"
-    ? '"Tu palabra es una lámpara a mis pies." — Salmos 119:105'
-    : '"Your word is a lamp to my feet." — Psalm 119:105';
-
-  // Clear results
-  document.getElementById('tab-result').innerHTML = '';
-  document.getElementById('search-result').innerHTML = '';
-  document.getElementById('search-input').value = '';
-  document.getElementById('clear-btn').classList.remove('show');
-
-  renderTabs();
-  renderChips();
-  loadDailyVerse();
-}
-
-/* ══════════════════════════════════════════
-   UTILS
-══════════════════════════════════════════ */
-function escHtml(s) {
-  if (!s) return '';
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+setTimeout(()=>{
+  const s=document.getElementById("splash");s.classList.add("out");
+  setTimeout(()=>{
+    s.classList.add("gone");
+    document.getElementById("app").classList.add("visible");
+    renderTabs();renderChips();renderDV();
+  },650);
+},2600);
 </script>
 </body>
 </html>
